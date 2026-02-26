@@ -41,7 +41,7 @@ const mockAISummary: AISummaryResponse = {
   ]
 };
 
-export default function SessionDetailScreen() {
+export default function SessionDetailPage() {
   const params = useParams();
   const id = params.id as string; // Get id from params
   const { t } = useI18n();

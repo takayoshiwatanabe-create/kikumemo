@@ -1,19 +1,21 @@
+"use client"; // This module uses client-side hooks like useState, useContext, useEffect, useRouter, useSelectedLayoutSegments
+
 import { translations, type Language } from "./translations";
-import { useState, createContext, useContext, ReactNode } from "react";
-import { useRouter, useSegments } from "next/navigation"; // Changed from "expo-router"
+import { useState, createContext, useContext, ReactNode, useEffect } from "react";
+import { useRouter, useSelectedLayoutSegments } from "next/navigation"; // Changed from useSegments to useSelectedLayoutSegments for better segment handling
 
 const SUPPORTED_LANGUAGES: Language[] = ["ja", "en", "zh", "ko", "es", "fr", "de", "pt", "ar", "hi"];
 const DEFAULT_LANGUAGE: Language = "ja";
 
-function getDeviceLanguage(): Language {
-  try {
-    // For web, use navigator.language
-    const deviceLang = navigator.language.split('-')[0] ?? DEFAULT_LANGUAGE;
-    if (SUPPORTED_LANGUAGES.includes(deviceLang as Language)) return deviceLang as Language;
-    return DEFAULT_LANGUAGE;
-  } catch {
-    return DEFAULT_LANGUAGE;
+export function getDeviceLanguage(): Language {
+  // This function is for client-side detection.
+  // On the server, the locale should be determined from the URL or headers.
+  if (typeof navigator === 'undefined') {
+    return DEFAULT_LANGUAGE; // Default on server
   }
+  const deviceLang = navigator.language.split('-')[0] as Language;
+  if (SUPPORTED_LANGUAGES.includes(deviceLang)) return deviceLang;
+  return DEFAULT_LANGUAGE;
 }
 
 interface I18nContextType {
@@ -25,34 +27,42 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
+interface I18nProviderProps {
+  children: ReactNode;
+  initialLocale: string; // Passed from the layout, e.g., `params.locale`
+}
+
+export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
   const router = useRouter();
-  const segments = useSegments();
-  
-  // Determine the initial language from the URL segment or device
-  const urlLocale = segments[0];
-  const initialLang = (urlLocale && SUPPORTED_LANGUAGES.includes(urlLocale as Language) ? urlLocale : getDeviceLanguage()) as Language;
-  
-  const [currentLang, setCurrentLang] = useState<Language>(initialLang);
+  const segments = useSelectedLayoutSegments(); // Use this to get segments after the locale
+
+  // The initial language is now passed as a prop from the layout, which gets it from the URL.
+  // This ensures server-side rendering has the correct locale from the start.
+  const [currentLang, setCurrentLang] = useState<Language>(initialLocale as Language);
+
+  // Update currentLang if initialLocale changes (e.g., if the URL locale changes)
+  useEffect(() => {
+    if (SUPPORTED_LANGUAGES.includes(initialLocale as Language)) {
+      setCurrentLang(initialLocale as Language);
+    } else {
+      setCurrentLang(DEFAULT_LANGUAGE);
+    }
+  }, [initialLocale]);
 
   const setLanguage = (newLang: Language) => {
     if (!SUPPORTED_LANGUAGES.includes(newLang)) {
       console.warn(`Unsupported language: ${newLang}. Falling back to ${DEFAULT_LANGUAGE}.`);
       newLang = DEFAULT_LANGUAGE;
     }
-    setCurrentLang(newLang);
     
-    // Update the URL to reflect the new locale
-    const currentPathSegments = [...segments];
-    if (currentPathSegments.length > 0 && SUPPORTED_LANGUAGES.includes(currentPathSegments[0] as Language)) {
-      currentPathSegments[0] = newLang;
-    } else {
-      // If for some reason the locale wasn't the first segment, prepend it
-      currentPathSegments.unshift(newLang);
-    }
-    const newPath = currentPathSegments.join('/');
-    // Ensure the path starts with a slash if it's not empty
-    router.replace(`/${newPath.startsWith('/') ? newPath.substring(1) : newPath}`);
+    // Construct the new path with the updated locale
+    // `segments` here would be ['dashboard', 'record', 'sessions', etc.]
+    // The first segment (locale) is handled by the `initialLocale` prop and the layout structure.
+    const pathWithoutLocale = segments.join('/');
+    const newPath = `/${newLang}${pathWithoutLocale ? '/' + pathWithoutLocale : ''}`;
+    
+    router.replace(newPath); // Use router.replace to change the URL
+    setCurrentLang(newLang); // Update local state immediately for responsiveness
   };
 
   const t = (key: string, vars?: Record<string, string | number>): string => {
@@ -83,11 +93,10 @@ export function useI18n() {
   return context;
 }
 
-// Re-export for direct use in non-component files if needed, but prefer useI18n
-export const lang = getDeviceLanguage();
-// The `isRTL` and `translate` exports here are based on the initial `lang` detection,
-// which might not reflect changes made via `setLanguage` in a component.
-// For dynamic language changes, `useI18n` should be preferred.
+// The `lang`, `isRTL`, and `translate` exports here are for initial server-side detection
+// or for use in non-React contexts where hooks cannot be used.
+// For dynamic language changes in components, `useI18n` is required.
+export const lang = getDeviceLanguage(); // This will only get the client-side device language once.
 export const isRTL = ["ar"].includes(lang);
 export const translate = (key: string, vars?: Record<string, string | number>): string => {
   const dict = translations[lang] ?? translations[DEFAULT_LANGUAGE];
@@ -99,4 +108,3 @@ export const translate = (key: string, vars?: Record<string, string | number>): 
   }
   return text;
 };
-

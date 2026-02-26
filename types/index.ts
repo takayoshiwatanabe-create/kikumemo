@@ -3,11 +3,11 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  avatar_url?: string;
+  avatar_url?: string | null; // avatar_url can be null
   subscription_plan: 'free' | 'monthly' | 'yearly';
-  subscription_expires?: Date;
+  subscription_expires?: Date | null; // subscription_expires can be null
   created_at: Date;
-  updated_at?: Date;
+  updated_at?: Date | null; // updated_at can be null
 }
 
 export interface SubscriptionInfo {
@@ -28,14 +28,14 @@ export interface RecordingSession {
   userId: string;
   title: string;
   status: 'recording' | 'processing' | 'completed' | 'failed';
-  audio_file_path?: string;
-  transcript?: string;
-  user_notes?: string;
-  ai_summary?: string;
+  audio_file_path?: string | null; // Can be null
+  transcript?: string | null; // Can be null
+  user_notes?: string | null; // Can be null
+  ai_summary?: string | null; // Can be null
   duration_seconds: number; // Corrected to match DB schema
   language_code: string;
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt?: Date | null; // Can be null
 }
 
 // AI Generated Content
@@ -46,7 +46,7 @@ export interface AIOutput {
   sessionId: string;
   type: AIType;
   content: string;
-  confidence_score?: number;
+  confidence_score?: number | null; // Can be null
   created_at: Date;
 }
 
@@ -146,3 +146,5 @@ export interface AudioData {
   volume?: number;
   frequencies?: number[];
 }
+
+
