@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { UserPreferences } from "@/types";
-import { Language } from "@/i18n"; // Import Language from i18n/index.ts
-import { useSession } from "next-auth/react"; // Import useSession
-import { useRouter } from "next/navigation"; // Import useRouter
+import { Language } from "@/i18n";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function SettingsScreen() {
   const { t, lang, setLanguage, isRTL } = useI18n();
@@ -29,12 +29,9 @@ export default function SettingsScreen() {
 
     const fetchPreferences = async () => {
       setLoading(true);
-      // In a real app, fetch user preferences from API
-      // const response = await fetch(`/api/user/preferences`);
-      // const data = await response.json();
-      // setPreferences(data);
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
-      setPreferences(prev => ({ ...prev, language: lang })); // Ensure language matches current URL locale
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setPreferences(prev => ({ ...prev, language: lang }));
       setLoading(false);
     };
 
@@ -47,16 +44,13 @@ export default function SettingsScreen() {
     const newLang = e.target.value as Language;
     setPreferences((prev) => ({ ...prev, language: newLang }));
     setLanguage(newLang);
-    // Call API to update user preferences
     console.log("Language changed to:", newLang);
-    // Redirect to the new locale path to ensure the entire app re-renders with the new language
     router.push(`/${newLang}/settings`);
   };
 
   const handleToggleAutoSave = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setPreferences((prev) => ({ ...prev, autoSave: value }));
-    // Call API to update user preferences
     console.log("Auto save toggled:", value);
   };
 
@@ -115,8 +109,8 @@ export default function SettingsScreen() {
           </label>
         </div>
 
-        {/* Add more settings here */}
       </div>
     </div>
   );
 }
+

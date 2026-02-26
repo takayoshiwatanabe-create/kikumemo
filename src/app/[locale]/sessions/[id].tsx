@@ -4,15 +4,13 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useI18n } from "@/i18n";
 import { RecordingSession, AISummaryResponse } from "@/types";
-import { useSession } from "next-auth/react"; // Import useSession
-import { useRouter } from "next/navigation"; // Import useRouter
-import { Language } from "@/i18n"; // Import Language from i18n/index.ts
-import { translations } from "@/i18n/translations"; // Import translations for type assertion
-import KeyPointsList from "@/components/ai/key-points-list"; // Import KeyPointsList
-import TodoList from "@/components/ai/todo-list"; // Import TodoList
-import DecisionsList from "@/components/ai/decisions-list"; // Import DecisionsList
-import OpenIssuesList from "@/components/ai/open-issues-list"; // Import OpenIssuesList
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Language } from "@/i18n";
+import { translations } from "@/i18n/translations";
+import SummaryDisplay from "@/components/ai/summary-display"; // Import SummaryDisplay
 
+// Mock data for development/testing
 const mockSessionDetail: RecordingSession = {
   id: "1",
   userId: "user1",
@@ -51,7 +49,6 @@ const mockAISummary: AISummaryResponse = {
 
 export default function SessionDetailScreen() {
   const params = useParams();
-  // Ensure `id` is always a string, even if `params.id` is an array (though it shouldn't be for a single dynamic segment).
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const { t, lang } = useI18n();
   const router = useRouter();
@@ -60,6 +57,7 @@ export default function SessionDetailScreen() {
   const [sessionData, setSessionData] = useState<RecordingSession | null>(null);
   const [aiOutput, setAiOutput] = useState<AISummaryResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -69,21 +67,67 @@ export default function SessionDetailScreen() {
 
     const fetchSessionData = async () => {
       setLoading(true);
-      // In a real app, you'd fetch from your API:
-      // const response = await fetch(`/api/sessions/${id}`);
-      // const data = await response.json();
-      // setSessionData(data.session);
-      // setAiOutput(data.aiOutput);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      setSessionData(mockSessionDetail);
-      setAiOutput(mockAISummary);
-      setLoading(false);
+      setError(null);
+      try {
+        // Fetch session details
+        const sessionRes = await fetch(`/api/sessions/${id}/status`);
+        if (!sessionRes.ok) {
+          const errorData = await sessionRes.json();
+          throw new Error(errorData.message || "Failed to fetch session details");
+        }
+        const sessionDetails: RecordingSession = await sessionRes.json();
+        setSessionData(sessionDetails);
+
+        // If session is completed, fetch AI outputs
+        if (sessionDetails.status === 'completed') {
+          // In a real app, you'd fetch AI outputs from /api/ai/outputs?sessionId=id
+          // For now, we use the ai_summary from sessionDetails and mock other parts
+          const aiSummaryResponse: AISummaryResponse = {
+            summary: sessionDetails.ai_summary || "",
+            keyPoints: [], // These would be fetched from ai_outputs table
+            todos: [],
+            decisions: [],
+            openIssues: [],
+          };
+
+          // Simulate fetching AI outputs from the ai_outputs table
+          const aiOutputsRes = await fetch(`/api/sessions/${id}/ai-outputs`); // New API endpoint needed
+          if (aiOutputsRes.ok) {
+            const aiOutputsData = await aiOutputsRes.json();
+            aiOutputsData.forEach((output: { type: string; content: string; }) => {
+              try {
+                const content = JSON.parse(output.content);
+                if (output.type === 'key_points') aiSummaryResponse.keyPoints = content;
+                if (output.type === 'todos') aiSummaryResponse.todos = content;
+                if (output.type === 'decisions') aiSummaryResponse.decisions = content;
+                if (output.type === 'open_issues') aiSummaryResponse.openIssues = content;
+              } catch (parseError) {
+                console.warn(`Failed to parse AI output content for type ${output.type}:`, output.content);
+              }
+            });
+          } else {
+            console.warn("Failed to fetch detailed AI outputs. Using session's ai_summary only.");
+          }
+
+          setAiOutput(aiSummaryResponse);
+        } else {
+          setAiOutput(null); // No AI output if not completed
+        }
+
+      } catch (err: any) {
+        console.error("Error fetching session data:", err);
+        setError(err.message || t("session.fetchError"));
+        setSessionData(null);
+        setAiOutput(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (id && status === "authenticated") {
       fetchSessionData();
     }
-  }, [id, status, lang, router]);
+  }, [id, status, lang, router, t]);
 
   if (loading || status === "loading") {
     return (
@@ -92,6 +136,14 @@ export default function SessionDetailScreen() {
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <p className="text-xl text-red-500 text-center">{error}</p>
       </div>
     );
   }
@@ -108,7 +160,6 @@ export default function SessionDetailScreen() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-4xl mx-auto pb-12">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{sessionData.title}</h1>
-        {/* Using a type assertion for the translation key to ensure it matches the i18n structure */}
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t(`session.status.${sessionData.status}` as keyof typeof translations.en.session.status)}</p>
 
         {sessionData.transcript && (
@@ -125,41 +176,9 @@ export default function SessionDetailScreen() {
           </div>
         )}
 
-        {aiOutput && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t("session.aiSummary")}</h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed mb-4">{aiOutput.summary}</p>
-
-            {aiOutput.keyPoints && aiOutput.keyPoints.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.keyPoints")}</h3>
-                <KeyPointsList points={aiOutput.keyPoints} />
-              </div>
-            )}
-
-            {aiOutput.todos && aiOutput.todos.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.todos")}</h3>
-                <TodoList todos={aiOutput.todos} lang={lang as Language} />
-              </div>
-            )}
-
-            {aiOutput.decisions && aiOutput.decisions.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.decisions")}</h3>
-                <DecisionsList decisions={aiOutput.decisions} />
-              </div>
-            )}
-
-            {aiOutput.openIssues && aiOutput.openIssues.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.openIssues")}</h3>
-                <OpenIssuesList issues={aiOutput.openIssues} />
-              </div>
-            )}
-          </div>
-        )}
+        <SummaryDisplay summary={aiOutput} isLoading={sessionData.status === 'processing'} error={error} />
       </div>
     </div>
   );
 }
+

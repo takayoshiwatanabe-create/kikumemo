@@ -5,7 +5,7 @@ import { useI18n } from "@/i18n";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Session } from "next-auth"; // Import Session type
+import { Session } from "next-auth";
 
 export default function DashboardScreen() {
   const { t, lang } = useI18n();
@@ -22,14 +22,10 @@ export default function DashboardScreen() {
   }
 
   if (status === "unauthenticated") {
-    // Redirect to login page if not authenticated
     router.push(`/${lang}/auth/login`);
     return null;
   }
 
-  // Ensure session.user is not null before accessing its properties
-  // The Session type already includes 'user' as non-nullable if `status === "authenticated"`.
-  // No need for explicit casting or null checks if status is 'authenticated'.
   const userName = (session as Session)?.user?.name || "User";
 
   return (
@@ -55,7 +51,7 @@ export default function DashboardScreen() {
           {t("dashboard.viewAllSessions")}
         </Button>
       </div>
-      {/* Add dashboard components here */}
     </div>
   );
 }
+

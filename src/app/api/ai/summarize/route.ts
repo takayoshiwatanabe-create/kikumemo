@@ -12,7 +12,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Transcript is required for summarization" }, { status: 400 });
     }
 
-    // Construct the prompt for GPT-4 Turbo
     const prompt = `
       You are an AI assistant specialized in generating concise and structured meeting summaries.
       Analyze the following meeting transcript and user notes to extract:
@@ -47,10 +46,10 @@ export async function POST(request: Request) {
     `;
 
     const chatCompletion = await openai.chat.completions.create({
-      model: "gpt-4-turbo", // As per CLAUDE.md
+      model: "gpt-4-turbo",
       messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" }, // Ensure JSON output
-      temperature: 0.2, // Lower temperature for more factual and less creative output
+      response_format: { type: "json_object" },
+      temperature: 0.2,
     });
 
     const content = chatCompletion.choices[0]?.message?.content;
@@ -67,16 +66,19 @@ export async function POST(request: Request) {
       throw new Error("AI response was not valid JSON.");
     }
 
-    // Basic validation to ensure the structure matches SummarizeResponse
-    if (!aiOutput.summary || !Array.isArray(aiOutput.keyPoints) || !Array.isArray(aiOutput.todos) || !Array.isArray(aiOutput.decisions) || !Array.isArray(aiOutput.openIssues)) {
-      console.warn("AI output structure mismatch:", aiOutput);
-      // Attempt to return what we have, or throw a more specific error
-      throw new Error("AI output structure does not match expected format.");
-    }
+    // Ensure all expected fields are present, even if empty arrays
+    const validatedOutput: SummarizeResponse = {
+      summary: aiOutput.summary || "",
+      keyPoints: aiOutput.keyPoints || [],
+      todos: aiOutput.todos || [],
+      decisions: aiOutput.decisions || [],
+      openIssues: aiOutput.openIssues || [],
+    };
 
-    return NextResponse.json(aiOutput, { status: 200 });
+    return NextResponse.json(validatedOutput, { status: 200 });
   } catch (error) {
     console.error("Error in AI summarization API:", error);
     return NextResponse.json({ message: "Failed to generate AI summary", error: (error as Error).message }, { status: 500 });
   }
 }
+

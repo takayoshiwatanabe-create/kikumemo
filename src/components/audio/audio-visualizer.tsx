@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { AudioVisualizerMessage } from "@/types";
-import AudioAurora from "@/components/animations/audio-aurora"; // Import AudioAurora
+import AudioAurora from "@/components/animations/audio-aurora";
 
 interface AudioVisualizerProps {
   audioData: AudioVisualizerMessage | null;
@@ -33,10 +33,9 @@ export default function AudioVisualizer({ audioData, isRecording }: AudioVisuali
       const barHeight = frequencies[i] * height;
       const y = height - barHeight;
 
-      // Adjust color based on volume for a more dynamic visual
-      const hue = 200 + currentVolume * 100; // Blue to purple/pink
-      const saturation = 70 + currentVolume * 30; // More saturated with higher volume
-      const lightness = 50 + currentVolume * 10; // Brighter with higher volume
+      const hue = 200 + currentVolume * 100;
+      const saturation = 70 + currentVolume * 30;
+      const lightness = 50 + currentVolume * 10;
       ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 
       ctx.fillRect(x, y, barWidth - 1, barHeight);
@@ -59,7 +58,7 @@ export default function AudioVisualizer({ audioData, isRecording }: AudioVisuali
         const ctx = canvas.getContext("2d");
         if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
-      setVolume(0); // Reset volume when not recording
+      setVolume(0);
     }
 
     return () => {
@@ -71,7 +70,7 @@ export default function AudioVisualizer({ audioData, isRecording }: AudioVisuali
 
   return (
     <div className="relative w-full max-w-xl h-48 flex items-center justify-center">
-      <AudioAurora isRecording={isRecording} volume={volume} /> {/* Use AudioAurora component */}
+      <AudioAurora isRecording={isRecording} volume={volume} />
       <canvas
         ref={canvasRef}
         width={500}

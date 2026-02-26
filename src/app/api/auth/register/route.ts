@@ -21,7 +21,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "User with this email already exists" }, { status: 409 });
     }
 
-    // `password_hash` is now added to the `users` table in CLAUDE.md.
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.users.create({
@@ -30,18 +29,17 @@ export async function POST(request: Request) {
         email,
         name,
         password_hash: hashedPassword,
-        subscription_plan: "free", // Default to free plan
+        subscription_plan: "free",
         created_at: new Date(),
         updated_at: new Date(),
       },
     });
 
-    // Optionally create user preferences
     await prisma.user_preferences.create({
       data: {
         user_id: newUser.id,
-        language: language || "en", // Default to 'en' if not provided
-        timezone: "Asia/Tokyo", // Default timezone
+        language: language || "en",
+        timezone: "Asia/Tokyo",
         audio_quality: "standard",
         auto_save: true,
         export_format: "markdown",
@@ -57,3 +55,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
+

@@ -7,3 +7,4 @@ export default function AppRootRedirect() {
   const lang = getDeviceLanguage(requestHeaders);
   redirect(`/${lang}/dashboard`);
 }
+

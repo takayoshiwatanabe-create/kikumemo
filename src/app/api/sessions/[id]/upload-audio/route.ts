@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { Session } from "next-auth"; // Import Session type
+import { Session } from "next-auth";
 
 const prisma = new PrismaClient();
 
@@ -43,8 +43,6 @@ export async function POST(
       return NextResponse.json({ message: "Session not found" }, { status: 404 });
     }
 
-    // Ensure the session is in 'recording' status before allowing upload
-    // This prevents uploading to a session that's already processing or completed.
     if (recordingSession.status !== 'recording') {
       return NextResponse.json({ message: `Session is not in 'recording' status. Current status: ${recordingSession.status}` }, { status: 409 });
     }
@@ -74,7 +72,7 @@ export async function POST(
       data: {
         audio_file_path: fileName,
         user_notes: userNotes,
-        status: "processing", // Update status to 'processing' after successful upload
+        status: "processing",
       },
     });
 
@@ -84,7 +82,6 @@ export async function POST(
     );
   } catch (error) {
     console.error("Error uploading audio:", error);
-    // If an error occurs during upload, set session status to 'failed'
     await prisma.recording_sessions.update({
       where: { id: sessionId },
       data: { status: "failed" },
@@ -92,3 +89,4 @@ export async function POST(
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
+

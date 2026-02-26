@@ -1,9 +1,8 @@
 import SessionDetailScreen from "../[id]";
 import { Metadata } from "next";
 import { translations } from "@/i18n/translations";
-import { Language } from "@/i18n"; // Import Language from i18n/index.ts
+import { Language } from "@/i18n";
 
-// Dynamic metadata for session detail page
 export async function generateMetadata({ params }: { params: { id: string, locale: string } }): Promise<Metadata> {
   const lang = params.locale;
   const t = (key: string, vars?: Record<string, string | number>) => {
@@ -16,8 +15,6 @@ export async function generateMetadata({ params }: { params: { id: string, local
     return text;
   };
 
-  // In a real app, you'd fetch the session title from a database based on params.id
-  // For now, using a generic placeholder.
   const sessionTitle = `${t("sessions.session")} ${params.id}`;
   return {
     title: `${sessionTitle} - ${t("header.appName")}`,
@@ -28,3 +25,4 @@ export async function generateMetadata({ params }: { params: { id: string, local
 export default function SessionDetailPage() {
   return <SessionDetailScreen />;
 }
+

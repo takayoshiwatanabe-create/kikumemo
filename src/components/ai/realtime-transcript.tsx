@@ -10,7 +10,6 @@ interface RealtimeTranscriptProps {
   isProcessing: boolean;
 }
 
-// TypewriterVariants from CLAUDE.md
 const TypewriterVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -22,7 +21,6 @@ const TypewriterVariants = {
   },
 };
 
-// ThinkingVariants from CLAUDE.md
 const ThinkingVariants = {
   initial: { y: 20, opacity: 0 },
   animate: {
@@ -73,7 +71,7 @@ export default function RealtimeTranscript({
             className="text-gray-500 dark:text-gray-400 italic"
             initial="initial"
             animate="animate"
-            variants={ThinkingVariants} // Use ThinkingVariants from CLAUDE.md
+            variants={ThinkingVariants}
           >
             {t("record.listening")}...
           </motion.p>
@@ -93,7 +91,7 @@ export default function RealtimeTranscript({
             className="text-blue-600 dark:text-blue-400 italic mt-4"
             initial="initial"
             animate="animate"
-            variants={ThinkingVariants} // Use ThinkingVariants from CLAUDE.md
+            variants={ThinkingVariants}
           >
             {t("record.processingAudio")}...
           </motion.p>
@@ -107,3 +105,4 @@ export default function RealtimeTranscript({
     </div>
   );
 }
+

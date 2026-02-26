@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Language } from "@/i18n"; // Import Language from i18n/index.ts
+import { Language } from "@/i18n";
 import RealtimeTranscript from "@/components/ai/realtime-transcript";
 import { AudioVisualizerMessage } from "@/types";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
@@ -41,21 +41,17 @@ export default function RecordScreen() {
     resume: resumeRecordingHook,
   } = useAudioRecorder({
     onDataAvailable: (data) => {
-      // In a real scenario, send this data to a WebSocket for real-time ASR
-      // For demonstration, we'll just append a placeholder and simulate visualizer data
       if (data.size > 0) {
-        // Simulate real-time transcript chunk
-        // The CLAUDE.md spec for WebSocket RealtimeTranscriptMessage includes `isFinal`.
-        // This simulation should ideally reflect that, but for a simple placeholder, it's acceptable.
-        // The `RealtimeTranscript` component itself doesn't currently use `isFinal`.
+        // This is a placeholder for actual real-time transcription.
+        // In a real scenario, `data` would be sent to a WebSocket for transcription.
+        // For now, we simulate some activity and update visualizer.
         setTranscript(prev => prev + " " + t("record.listeningChunk"));
 
-        // Simulate audio visualizer data
-        const volume = Math.random(); // Random volume between 0 and 1
-        const frequencies = Array.from({ length: 50 }, () => Math.random()); // 50 random frequencies
+        const volume = Math.random(); // Simulate volume
+        const frequencies = Array.from({ length: 50 }, () => Math.random()); // Simulate frequencies
         setAudioVisualizerData({
           type: 'audio_data',
-          sessionId: currentSession?.id || 'mock-session-id', // Use currentSession.id if available
+          sessionId: currentSession?.id || 'mock-session-id', // Use mock if session not created yet
           frequencies: frequencies,
           volume: volume,
         });
@@ -76,16 +72,13 @@ export default function RecordScreen() {
           throw new Error("Failed to upload audio");
         }
 
-        // After upload, trigger processing. The `processSession` in the store
-        // should handle the API call to `/api/sessions/:id/process`.
-        // Ensure `processSession` is correctly typed and handles parameters.
-        await processSession(currentSession.id, transcript, userNotes, lang as Language); // Pass session ID and other data
+        await processSession(currentSession.id, transcript, userNotes, lang as Language);
         router.push(`/${lang}/sessions/${currentSession.id}`);
       }
     },
     onError: (err) => {
       console.error("Recording error:", err);
-      useSessionStore.setState({ error: err.message }); // Store error message
+      useSessionStore.setState({ error: err.message });
     }
   });
 
@@ -108,10 +101,10 @@ export default function RecordScreen() {
 
     try {
       await createSession(sessionTitle, lang as Language);
-      setTranscript(""); // Clear transcript on new recording
-      setAudioVisualizerData(null); // Clear visualizer data
+      setTranscript("");
+      setAudioVisualizerData(null);
       startRecordingHook();
-    } catch (err: any) { // Catch error as any to access message property
+    } catch (err: any) {
       console.error("Error starting recording:", err);
       alert(t("record.permissionDenied"));
       useSessionStore.setState({ error: err.message || "Failed to start recording" });
@@ -120,12 +113,12 @@ export default function RecordScreen() {
 
   const handleStopRecording = () => {
     stopRecordingHook();
-    setAudioVisualizerData(null); // Clear visualizer data on stop
+    setAudioVisualizerData(null);
   };
 
   const handlePauseRecording = () => {
     pauseRecordingHook();
-    setAudioVisualizerData(null); // Clear visualizer data on pause
+    setAudioVisualizerData(null);
   };
 
   const handleResumeRecording = () => {
@@ -198,3 +191,4 @@ export default function RecordScreen() {
     </div>
   );
 }
+

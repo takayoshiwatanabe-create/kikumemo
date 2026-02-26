@@ -95,7 +95,6 @@ CREATE TABLE users (
   id VARCHAR(36) PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,
   name VARCHAR(100) NOT NULL,
-  password_hash VARCHAR(255) NOT NULL, -- Added password_hash for credentials provider
   avatar_url VARCHAR(500),
   subscription_plan ENUM('free', 'monthly', 'yearly') DEFAULT 'free',
   subscription_expires DATETIME,
@@ -127,7 +126,7 @@ CREATE TABLE recording_sessions (
 CREATE TABLE ai_outputs (
   id VARCHAR(36) PRIMARY KEY,
   session_id VARCHAR(36) NOT NULL,
-  type ENUM('summary', 'todos', 'key_points', 'decisions', 'open_issues') NOT NULL, -- Added 'open_issues'
+  type ENUM('summary', 'todos', 'key_points', 'decisions') NOT NULL,
   content TEXT NOT NULL,
   confidence_score DECIMAL(3,2),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -271,10 +270,6 @@ src/
 │   ├── ui/               # Shadcn/ui ベース
 │   ├── audio/            # 音声関連
 │   ├── ai/               # AI結果表示
-│   │   ├── key-points-list.tsx # キーポイントリスト
-│   │   ├── todo-list.tsx       # ToDoリスト
-│   │   ├── decisions-list.tsx  # 決定事項リスト
-│   │   └── open-issues-list.tsx # 未解決課題リスト
 │   └── animations/       # Framer Motion
 ├── hooks/                # カスタムフック
 ├── lib/                  # ユーティリティ
@@ -294,11 +289,11 @@ interface SessionStore {
   audioData: AudioData | null;
   
   // アクション
-  createSession: (title: string, language: Language) => Promise<void>; // Added language
+  createSession: (title: string) => Promise<void>;
   startRecording: () => void;
   stopRecording: () => void;
   updateUserNotes: (notes: string) => void;
-  processSession: (sessionId: string, transcript: string, userNotes: string, language: Language) => Promise<void>; // Added sessionId, transcript, userNotes, language
+  processSession: () => Promise<void>;
 }
 
 // UI状態ストア
@@ -443,4 +438,3 @@ N/A
 - Default language: ja (Japanese)
 - RTL support required for Arabic (ar)
 - Use isRTL flag from i18n module for layout adjustments
-

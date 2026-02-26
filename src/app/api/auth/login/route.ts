@@ -21,10 +21,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
-    // This route is primarily for a custom login API if NextAuth's signIn is not used directly.
-    // However, if NextAuth's `[...nextauth]` route handles credentials, this route might be redundant
-    // or used for a different purpose (e.g., issuing custom API tokens).
-    // For now, it returns a success message. The actual session management should be via NextAuth.
     return NextResponse.json(
       { message: "Login successful", user: { id: user.id, email: user.email, name: user.name, subscription_plan: user.subscription_plan } },
       { status: 200 }
@@ -34,3 +30,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
+

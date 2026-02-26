@@ -4,9 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { useRouter } from "next/navigation";
 import { RecordingSession } from "@/types";
-import { useSession } from "next-auth/react"; // Import useSession
+import { useSession } from "next-auth/react";
 import { translations } from "@/i18n/translations";
-import { Language } from "@/i18n"; // Import Language from i18n/index.ts
+import { Language } from "@/i18n";
 
 const mockSessions: RecordingSession[] = [
   {
@@ -56,11 +56,8 @@ export default function SessionsScreen() {
 
     const fetchSessions = async () => {
       setLoading(true);
-      // In a real app, fetch from API:
-      // const response = await fetch(`/api/sessions`); // Assuming an API endpoint for all sessions
-      // const data = await response.json();
-      // setSessions(data);
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
       setSessions(mockSessions);
       setLoading(false);
     };
@@ -104,7 +101,6 @@ export default function SessionsScreen() {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
                   {item.title}
                 </h2>
-                {/* Using a type assertion for the translation key to ensure it matches the i18n structure */}
                 <p className="text-md text-gray-600 dark:text-gray-400">
                   {t(`session.status.${item.status}` as keyof typeof translations.en.session.status)}
                 </p>
@@ -119,3 +115,4 @@ export default function SessionsScreen() {
     </div>
   );
 }
+

@@ -4,18 +4,18 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n";
 import { AISummaryResponse } from "@/types";
-import KeyPointsList from "./key-points-list"; // Import KeyPointsList
-import TodoList from "./todo-list"; // Import TodoList
-import DecisionsList from "./decisions-list"; // Import DecisionsList
-import OpenIssuesList from "./open-issues-list"; // Import OpenIssuesList
+import KeyPointsList from "./key-points-list";
+import TodoList from "./todo-list";
+import DecisionsList from "./decisions-list";
+import OpenIssuesList from "./open-issues-list";
+import { Language } from "@/i18n";
 
 interface SummaryDisplayProps {
   summary: AISummaryResponse | null;
   isLoading: boolean;
-  error?: string;
+  error?: string | null; // Allow null for error
 }
 
-// ThinkingVariants from CLAUDE.md
 const ThinkingVariants = {
   initial: { y: 20, opacity: 0 },
   animate: {
@@ -58,7 +58,7 @@ export default function SummaryDisplay({ summary, isLoading, error }: SummaryDis
     );
   }
 
-  if (!summary) {
+  if (!summary || !summary.summary) { // Check for summary.summary as well
     return (
       <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-gray-700 dark:text-gray-300">
         <p>{t("session.noSummaryAvailable")}</p>
@@ -101,3 +101,4 @@ export default function SummaryDisplay({ summary, isLoading, error }: SummaryDis
     </div>
   );
 }
+

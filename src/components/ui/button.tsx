@@ -42,29 +42,6 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    // When asChild is true, children must be a single React element.
-    // If children is not a valid element, we should throw an error or handle it.
-    // For now, we'll ensure children is a valid element before cloning.
-    // This check is good practice, but `children` can be `ReactNode` which is broader than `React.ReactElement`.
-    // If `asChild` is true, `children` *must* be a single element.
-    // The current implementation allows `children` to be `ReactNode`, which could be a string, number, array, etc.
-    // This might lead to runtime errors if `children` is not a valid element when `asChild` is true.
-    // For now, this is a minor deviation from strict `asChild` usage but doesn't break the current code.
-    // The `console.error` and fallback are good.
-    if (asChild && !React.isValidElement(children)) {
-      console.error("Children must be a single valid React element when `asChild` is true.");
-      // Fallback to a default button if children is invalid
-      return (
-        <button
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref}
-          {...props}
-        >
-          {children}
-        </button>
-      );
-    }
-
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}

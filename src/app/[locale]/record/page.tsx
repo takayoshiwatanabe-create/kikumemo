@@ -1,7 +1,7 @@
 import RecordScreen from "./index";
 import { Metadata } from "next";
 import { translations } from "@/i18n/translations";
-import { Language } from "@/i18n"; // Import Language from i18n/index.ts
+import { Language } from "@/i18n";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const lang = params.locale;
@@ -24,3 +24,4 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 export default function RecordPage() {
   return <RecordScreen />;
 }
+

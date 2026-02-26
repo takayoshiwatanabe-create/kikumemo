@@ -3,8 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-interface KeyPointsListProps {
-  points: string[];
+interface OpenIssuesListProps {
+  issues: string[];
 }
 
 const TypewriterVariants = {
@@ -23,7 +23,7 @@ const listItemVariants = {
   visible: { opacity: 1, x: 0 },
 };
 
-export default function KeyPointsList({ points }: KeyPointsListProps) {
+export default function OpenIssuesList({ issues }: OpenIssuesListProps) {
   return (
     <motion.ul
       className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1"
@@ -31,9 +31,9 @@ export default function KeyPointsList({ points }: KeyPointsListProps) {
       initial="hidden"
       animate="visible"
     >
-      {points.map((point, index) => (
+      {issues.map((issue, index) => (
         <motion.li key={index} variants={listItemVariants}>
-          {point}
+          {issue}
         </motion.li>
       ))}
     </motion.ul>
