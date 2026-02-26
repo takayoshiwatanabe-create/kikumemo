@@ -24,5 +24,3 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 export default function SessionsPage() {
   return <SessionsScreen />;
 }
-
-

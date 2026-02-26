@@ -35,4 +35,3 @@ export default function ThinkingAnimation({ text, className }: ThinkingAnimation
   );
 }
 
-

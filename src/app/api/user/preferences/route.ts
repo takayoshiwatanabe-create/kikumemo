@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { UserPreferences } from "@/types";
 import { Session } from "next-auth";
 
 const prisma = new PrismaClient();
@@ -49,16 +48,23 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const updatedFields: Partial<UserPreferences> = await request.json();
+    // The request body should match the database schema for update operations
+    const updatedFields: Partial<{
+      language: string;
+      timezone: string;
+      audio_quality: "standard" | "high";
+      auto_save: boolean;
+      export_format: "markdown" | "docx" | "pdf";
+    }> = await request.json();
 
     const updatedPreferences = await prisma.user_preferences.update({
       where: { user_id: session.user.id },
       data: {
         language: updatedFields.language,
         timezone: updatedFields.timezone,
-        audio_quality: updatedFields.audioQuality,
-        auto_save: updatedFields.autoSave,
-        export_format: updatedFields.exportFormat,
+        audio_quality: updatedFields.audio_quality,
+        auto_save: updatedFields.auto_save,
+        export_format: updatedFields.export_format,
       },
     });
 

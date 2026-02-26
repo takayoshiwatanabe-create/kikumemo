@@ -81,4 +81,3 @@ export default function AudioVisualizer({ audioData, isRecording }: AudioVisuali
   );
 }
 
-

@@ -127,7 +127,7 @@ export default function SessionsScreen() {
                   {t(`session.status.${item.status}` as keyof typeof translations.en.session.status)}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-                  {new Date(item.createdAt).toLocaleDateString(lang)}
+                  {new Date(item.created_at).toLocaleDateString(lang)}
                 </p>
               </motion.button>
             ))}

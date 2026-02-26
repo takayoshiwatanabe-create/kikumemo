@@ -73,6 +73,8 @@ export default function RecordScreen() {
           throw new Error("Failed to upload audio");
         }
 
+        // The `processSession` in the store should handle the API call to `/api/sessions/:id/process`
+        // It needs the current transcript (even if empty for now), user notes, and language.
         await processSession(currentSession.id, transcript, userNotes, lang as Language);
         router.push(`/${lang}/sessions/${currentSession.id}`);
       }

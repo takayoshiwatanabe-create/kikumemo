@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 import { useUIStore } from "@/stores/ui-store"; // Import useUIStore
 
 interface HeaderProps {
-  onMenuPress: () => void;
+  // onMenuPress: () => void; // Removed as it's handled by useUIStore
 }
 
-export function Header({ onMenuPress }: HeaderProps) {
+export function Header({}: HeaderProps) { // Removed onMenuPress from props
   const { t, lang } = useI18n();
   const pathname = usePathname();
   const { toggleSidebar } = useUIStore(); // Use toggleSidebar from store
@@ -68,3 +68,5 @@ export function Header({ onMenuPress }: HeaderProps) {
     </header>
   );
 }
+
+

@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
-        token.subscription_plan = (user as any).subscription_plan;
+        token.subscription_plan = (user as User).subscription_plan; // Explicitly cast to User
       }
       return token;
     },

@@ -8,4 +8,3 @@ export default function AppRootRedirect() {
   redirect(`/${lang}/dashboard`);
 }
 
-

@@ -48,8 +48,8 @@ export async function GET(
       user_notes: recordingSession.user_notes || undefined,
       duration_seconds: recordingSession.duration_seconds,
       language_code: recordingSession.language_code,
-      createdAt: recordingSession.created_at,
-      updatedAt: recordingSession.updated_at,
+      created_at: recordingSession.created_at,
+      updated_at: recordingSession.updated_at,
     };
 
     return NextResponse.json(response, { status: 200 });

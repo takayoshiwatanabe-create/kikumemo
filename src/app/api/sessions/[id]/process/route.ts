@@ -81,8 +81,13 @@ export async function POST(
 
     if (!userProvidedTranscript || userProvidedTranscript.trim() === "") {
       try {
+        // OpenAI Whisper API expects a Blob or File object, not a Buffer directly.
+        // We need to convert the Buffer to a Blob/File for the API.
+        const audioBlob = new Blob([audioBuffer], { type: "audio/webm" });
+        const audioFile = new File([audioBlob], "audio.webm", { type: "audio/webm" });
+
         const transcription = await openai.audio.transcriptions.create({
-          file: new File([audioBuffer], "audio.webm", { type: "audio/webm" }),
+          file: audioFile,
           model: "whisper-1",
           language: language,
         });
@@ -187,7 +192,7 @@ export async function POST(
       await prisma.ai_outputs.createMany({
         data: aiOutputsToCreate.map(output => ({
           ...output,
-          confidence_score: 0.95, // Mock confidence score
+          confidence_score: output.confidence_score || 0.95, // Mock confidence score, ensure it's defined
           created_at: new Date(),
         })),
       });
@@ -206,5 +211,3 @@ export async function POST(
     return NextResponse.json({ message: "Internal server error", error: error.message }, { status: 500 });
   }
 }
-
-

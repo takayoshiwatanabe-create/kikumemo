@@ -5,8 +5,8 @@ import { useI18n } from "@/i18n";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Session } from "next-auth";
 import { motion } from "framer-motion";
+import { Session } from "next-auth"; // Import Session type
 
 export default function DashboardScreen() {
   const { t, lang } = useI18n();
@@ -27,7 +27,8 @@ export default function DashboardScreen() {
     return null;
   }
 
-  const userName = (session as Session)?.user?.name || "User";
+  // Ensure session.user is not null before accessing its properties
+  const userName = (session?.user as Session['user'])?.name || "User";
 
   const containerVariants = {
     hidden: { opacity: 0 },
