@@ -10,8 +10,8 @@ const DEFAULT_LANGUAGE: Language = "ja";
 export function getDeviceLanguage(): Language {
   // This function is for client-side detection.
   // On the server, the locale should be determined from the URL or headers.
-  if (typeof navigator === 'undefined') {
-    return DEFAULT_LANGUAGE; // Default on server
+  if (typeof navigator === 'undefined' || !navigator.language) {
+    return DEFAULT_LANGUAGE; // Default on server or if navigator.language is not available
   }
   const deviceLang = navigator.language.split('-')[0] as Language;
   if (SUPPORTED_LANGUAGES.includes(deviceLang)) return deviceLang;
@@ -34,7 +34,12 @@ interface I18nProviderProps {
 
 export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
   const router = useRouter();
-  const segments = useSelectedLayoutSegments(); // Use this to get segments after the locale
+  // `useSelectedLayoutSegments` returns an array of segments for the current route.
+  // The first segment is the locale, which we already have as `initialLocale`.
+  // We need to exclude the locale segment when reconstructing the path.
+  const allSegments = useSelectedLayoutSegments(); 
+  // Filter out the locale segment if it's present at the beginning of `allSegments`
+  const segments = allSegments.filter(segment => segment !== initialLocale);
 
   // The initial language is now passed as a prop from the layout, which gets it from the URL.
   // This ensures server-side rendering has the correct locale from the start.
@@ -108,3 +113,4 @@ export const translate = (key: string, vars?: Record<string, string | number>): 
   }
   return text;
 };
+

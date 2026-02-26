@@ -8,3 +8,4 @@ export default function RootLayout() {
   const lang = getDeviceLanguage();
   redirect(`/${lang}/dashboard`);
 }
+

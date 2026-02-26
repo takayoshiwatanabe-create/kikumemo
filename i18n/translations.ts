@@ -216,7 +216,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "language.en": "Anglais",
     "language.zh": "Chinois",
     "language.ko": "Coréen",
-    "language.es": "Español",
+    "language.es": "Espagnol",
     "language.fr": "Francés",
     "language.de": "Allemand",
     "language.pt": "Portugais",
@@ -372,5 +372,4 @@ export const translations: Record<Language, Record<string, string>> = {
     "language.hi": "हिंदी",
   },
 };
-
 

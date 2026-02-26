@@ -4,42 +4,12 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Adapter } from "next-auth/adapters"; // Import Adapter type
-import type { JWT } from "next-auth/jwt"; // Import JWT type
+// No need to import JWT from 'next-auth/jwt' here, it's handled by module augmentation in types/auth.d.ts
 
 const prisma = new PrismaClient();
 
-// Extend the NextAuth session and JWT types to include custom properties
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      email: string;
-      name: string;
-      image?: string;
-      // Add other properties from your user model here
-    };
-  }
-
-  interface User {
-    id: string;
-    email: string;
-    name: string;
-    avatar_url?: string;
-    // Add other properties from your user model here
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string;
-    email: string;
-    name: string;
-    picture?: string;
-    accessToken?: string;
-    refreshToken?: string;
-    // Add other properties from your user model here
-  }
-}
+// The module augmentation for NextAuth types is now in types/auth.d.ts
+// so we don't need to declare them here.
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter, // Cast PrismaAdapter to Adapter type
@@ -77,7 +47,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          image: user.avatar_url,
+          image: user.avatar_url, // Map avatar_url to image for NextAuth User type
           // Add any other non-sensitive user data needed for the session
         };
       },
@@ -100,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        token.picture = user.image;
+        token.picture = user.image; // Map user.image to token.picture
         // Add custom properties from the user object if needed
       }
       if (account) {
@@ -118,7 +88,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.image = token.picture as string;
+        session.user.image = token.picture as string | null | undefined; // Ensure type matches
         // Add custom properties to session.user
       }
       return session;
@@ -134,3 +104,4 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+
