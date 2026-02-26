@@ -27,7 +27,7 @@ export default function LocaleLayout({
 
       {/* Mobile Sidebar (overlay) */}
       {/* The mobile sidebar should be conditionally rendered and controlled by `sidebarOpen` */}
-      {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />}
+      {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} isStatic={false} />}
 
       <div className="flex flex-1 flex-col">
         <Header onMenuPress={toggleSidebar} /> {/* Added onMenuPress to Header */}

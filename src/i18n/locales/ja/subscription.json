@@ -1,0 +1,49 @@
+{
+  "subscription": {
+    "title": "サブスクリプションプラン",
+    "description": "キクメモの機能を最大限に活用するために、最適なプランをお選びください。",
+    "freePlan": {
+      "name": "フリープラン",
+      "price": "無料",
+      "features": [
+        "月5回までの議事録生成",
+        "基本的なAI要約",
+        "7日間の履歴保存"
+      ],
+      "currentPlan": "現在のプラン",
+      "callToAction": "今すぐ始める"
+    },
+    "monthlyPlan": {
+      "name": "月額プラン",
+      "price": "¥980/月",
+      "features": [
+        "無制限の議事録生成",
+        "高度なAI要約機能",
+        "リアルタイム文字起こし",
+        "無制限の履歴保存",
+        "優先サポート"
+      ],
+      "callToAction": "月額プランにアップグレード"
+    },
+    "yearlyPlan": {
+      "name": "年額プラン",
+      "price": "¥9,800/年",
+      "features": [
+        "無制限の議事録生成",
+        "高度なAI要約機能",
+        "リアルタイム文字起こし",
+        "無制限の履歴保存",
+        "優先サポート",
+        "2ヶ月無料（年間契約）"
+      ],
+      "callToAction": "年額プランにアップグレード"
+    },
+    "upgradeSuccess": "サブスクリプションが正常にアップグレードされました！",
+    "upgradeError": "サブスクリプションのアップグレードに失敗しました。もう一度お試しください。",
+    "manageSubscription": "サブスクリプションを管理",
+    "cancelSubscription": "サブスクリプションをキャンセル",
+    "planDetails": "プラン詳細",
+    "remainingRecordings": "残り議事録生成回数: {{count}}回",
+    "unlimitedRecordings": "無制限の議事録生成"
+  }
+}

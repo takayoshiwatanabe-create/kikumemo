@@ -1,0 +1,49 @@
+{
+  "subscription": {
+    "title": "Subscription Plans",
+    "description": "Choose the best plan to unlock the full potential of KikuMemo.",
+    "freePlan": {
+      "name": "Free Plan",
+      "price": "Free",
+      "features": [
+        "Up to 5 meeting summaries per month",
+        "Basic AI summarization",
+        "7-day history retention"
+      ],
+      "currentPlan": "Current Plan",
+      "callToAction": "Start Now"
+    },
+    "monthlyPlan": {
+      "name": "Monthly Plan",
+      "price": "$9.99/month",
+      "features": [
+        "Unlimited meeting summaries",
+        "Advanced AI summarization features",
+        "Real-time transcription",
+        "Unlimited history retention",
+        "Priority support"
+      ],
+      "callToAction": "Upgrade to Monthly"
+    },
+    "yearlyPlan": {
+      "name": "Yearly Plan",
+      "price": "$99.99/year",
+      "features": [
+        "Unlimited meeting summaries",
+        "Advanced AI summarization features",
+        "Real-time transcription",
+        "Unlimited history retention",
+        "Priority support",
+        "2 months free (annual billing)"
+      ],
+      "callToAction": "Upgrade to Yearly"
+    },
+    "upgradeSuccess": "Subscription upgraded successfully!",
+    "upgradeError": "Failed to upgrade subscription. Please try again.",
+    "manageSubscription": "Manage Subscription",
+    "cancelSubscription": "Cancel Subscription",
+    "planDetails": "Plan Details",
+    "remainingRecordings": "Remaining recordings: {{count}}",
+    "unlimitedRecordings": "Unlimited recordings"
+  }
+}

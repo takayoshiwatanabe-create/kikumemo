@@ -16,7 +16,7 @@ import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { motion } from "framer-motion";
 
 export default function RecordScreen() {
-  const { t, lang } = useI18n();
+  const { t, lang, isRTL } = useI18n();
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -161,7 +161,7 @@ export default function RecordScreen() {
 
   return (
     <motion.div
-      className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 dark:bg-gray-900"
+      className={`flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 dark:bg-gray-900 ${isRTL ? "rtl" : "ltr"}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -190,7 +190,7 @@ export default function RecordScreen() {
           value={sessionTitle}
           onChange={(e) => setSessionTitle(e.target.value)}
           disabled={isRecording || isLoading}
-          className="w-full rounded-md border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+          className={`w-full rounded-md border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${isRTL ? "text-right" : "text-left"}`}
         />
       </motion.div>
 
@@ -241,4 +241,3 @@ export default function RecordScreen() {
     </motion.div>
   );
 }
-

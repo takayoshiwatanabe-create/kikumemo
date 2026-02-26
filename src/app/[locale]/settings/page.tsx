@@ -24,4 +24,3 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 export default function SettingsPage() {
   return <SettingsScreen />;
 }
-

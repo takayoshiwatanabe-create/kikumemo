@@ -9,7 +9,7 @@ import { translations } from "@/i18n/translations";
 import { motion } from "framer-motion";
 
 export default function SessionsScreen() {
-  const { t, lang } = useI18n();
+  const { t, lang, isRTL } = useI18n();
   const router = useRouter();
   const { data: session, status } = useSession();
   const [sessions, setSessions] = useState<RecordingSession[]>([]);
@@ -92,7 +92,7 @@ export default function SessionsScreen() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-100 p-6 dark:bg-gray-900"
+      className={`min-h-screen bg-gray-100 p-6 dark:bg-gray-900 ${isRTL ? "rtl" : "ltr"}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -117,7 +117,7 @@ export default function SessionsScreen() {
               <motion.button
                 key={item.id}
                 onClick={() => handleSessionClick(item.id)}
-                className="block w-full rounded-lg bg-white p-5 text-left shadow-md transition-shadow duration-200 ease-in-out hover:shadow-lg dark:bg-gray-800"
+                className={`block w-full rounded-lg bg-white p-5 shadow-md transition-shadow duration-200 ease-in-out hover:shadow-lg dark:bg-gray-800 ${isRTL ? "text-right" : "text-left"}`}
                 variants={itemVariants}
               >
                 <h2 className="mb-1 text-xl font-semibold text-gray-900 dark:text-white">
@@ -137,4 +137,3 @@ export default function SessionsScreen() {
     </motion.div>
   );
 }
-

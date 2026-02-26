@@ -148,7 +148,7 @@ export default function SettingsScreen() {
             id="language-select"
             value={localPreferences.language}
             onChange={handleLanguageChange}
-            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className={`rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${isRTL ? "text-right" : "text-left"}`}
           >
             <option value="ja">{t("language.ja")}</option>
             <option value="en">{t("language.en")}</option>
@@ -174,7 +174,7 @@ export default function SettingsScreen() {
             id="timezone-select"
             value={localPreferences.timezone}
             onChange={handleTimezoneChange}
-            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className={`rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${isRTL ? "text-right" : "text-left"}`}
           >
             <option value="Asia/Tokyo">Asia/Tokyo</option>
             <option value="America/New_York">America/New_York</option>
@@ -194,7 +194,7 @@ export default function SettingsScreen() {
             id="audio-quality-select"
             value={localPreferences.audioQuality}
             onChange={handleAudioQualityChange}
-            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className={`rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${isRTL ? "text-right" : "text-left"}`}
           >
             <option value="standard">{t("settings.audioQualityStandard")}</option>
             <option value="high">{t("settings.audioQualityHigh")}</option>
@@ -212,7 +212,7 @@ export default function SettingsScreen() {
             id="export-format-select"
             value={localPreferences.exportFormat}
             onChange={handleExportFormatChange}
-            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className={`rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${isRTL ? "text-right" : "text-left"}`}
           >
             <option value="markdown">Markdown</option>
             <option value="docx">DOCX</option>
@@ -243,4 +243,3 @@ export default function SettingsScreen() {
     </motion.div>
   );
 }
-

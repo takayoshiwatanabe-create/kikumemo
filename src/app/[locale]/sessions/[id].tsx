@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 export default function SessionDetailScreen() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const { t, lang } = useI18n();
+  const { t, lang, isRTL } = useI18n();
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -141,7 +141,7 @@ export default function SessionDetailScreen() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-100 p-6 dark:bg-gray-900"
+      className={`min-h-screen bg-gray-100 p-6 dark:bg-gray-900 ${isRTL ? "rtl" : "ltr"}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -166,7 +166,7 @@ export default function SessionDetailScreen() {
             variants={itemVariants}
           >
             <h2 className="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{t("session.transcript")}</h2>
-            <p className="leading-relaxed text-gray-800 dark:text-gray-200">{sessionData.transcript}</p>
+            <p className={`leading-relaxed text-gray-800 dark:text-gray-200 ${isRTL ? "text-right" : "text-left"}`}>{sessionData.transcript}</p>
           </motion.div>
         )}
 
@@ -176,15 +176,14 @@ export default function SessionDetailScreen() {
             variants={itemVariants}
           >
             <h2 className="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{t("session.userNotes")}</h2>
-            <p className="leading-relaxed text-gray-800 dark:text-gray-200">{sessionData.user_notes}</p>
+            <p className={`leading-relaxed text-gray-800 dark:text-gray-200 ${isRTL ? "text-right" : "text-left"}`}>{sessionData.user_notes}</p>
           </motion.div>
         )}
 
         <motion.div variants={itemVariants}>
-          <SummaryDisplay summary={aiOutput} isLoading={sessionData.status === 'processing'} error={error} />
+          <SummaryDisplay summary={aiOutput} isLoading={sessionData.status === 'processing'} error={error} isRTL={isRTL} />
         </motion.div>
       </div>
     </motion.div>
   );
 }
-

@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { Session } from "next-auth"; // Import Session type
 
 export default function DashboardScreen() {
-  const { t, lang } = useI18n();
+  const { t, lang, isRTL } = useI18n();
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -54,7 +54,7 @@ export default function DashboardScreen() {
 
   return (
     <motion.div
-      className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 dark:bg-gray-900"
+      className={`flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 dark:bg-gray-900 ${isRTL ? "rtl" : "ltr"}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -89,4 +89,3 @@ export default function DashboardScreen() {
     </motion.div>
   );
 }
-
