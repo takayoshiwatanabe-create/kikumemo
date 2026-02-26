@@ -1,6 +1,5 @@
 import { I18nProvider } from "@/i18n";
 import "../globals.css";
-import { SessionProvider } from "../session-provider";
 import type { Metadata } from "next";
 import { Language, translations } from "@/i18n/translations"; // Import Language and translations
 import LocaleLayoutClient from "./_layout"; // Import the client component
@@ -37,12 +36,12 @@ export default function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body>
-        <SessionProvider>
-          <I18nProvider initialLocale={locale as Language}>
-            <LocaleLayoutClient>{children}</LocaleLayoutClient>
-          </I18nProvider>
-        </SessionProvider>
+        {/* SessionProvider is now handled in src/app/[locale]/_layout.tsx */}
+        <I18nProvider initialLocale={locale as Language}>
+          <LocaleLayoutClient>{children}</LocaleLayoutClient>
+        </I18nProvider>
       </body>
     </html>
   );
 }
+

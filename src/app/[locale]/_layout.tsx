@@ -7,6 +7,7 @@ import Sidebar from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useUIStore } from "@/stores/ui-store";
 import { usePathname } from "next/navigation";
+import { SessionProvider } from "next-auth/react"; // Import SessionProvider
 
 export default function LocaleLayout({
   children,
@@ -30,18 +31,21 @@ export default function LocaleLayout({
   }, [pathname, sidebarOpen, toggleSidebar]);
 
   return (
-    <div className={cn("flex min-h-screen", isRTL ? "rtl" : "ltr")}>
-      {/* Sidebar for large screens, always static here */}
-      <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />
+    <SessionProvider> {/* Wrap with SessionProvider */}
+      <div className={cn("flex min-h-screen", isRTL ? "rtl" : "ltr")}>
+        {/* Sidebar for large screens, always static here */}
+        <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />
 
-      {/* Mobile Sidebar (overlay) */}
-      {/* The mobile sidebar should be conditionally rendered and controlled by `sidebarOpen` */}
-      {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} isStatic={false} />}
+        {/* Mobile Sidebar (overlay) */}
+        {/* The mobile sidebar should be conditionally rendered and controlled by `sidebarOpen` */}
+        {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} isStatic={false} />}
 
-      <div className="flex flex-1 flex-col">
-        <Header onMenuPress={toggleSidebar} />
-        <main className="flex-1">{children}</main>
+        <div className="flex flex-1 flex-col">
+          <Header onMenuPress={toggleSidebar} />
+          <main className="flex-1">{children}</main>
+        </div>
       </div>
-    </div>
+    </SessionProvider>
   );
 }
+

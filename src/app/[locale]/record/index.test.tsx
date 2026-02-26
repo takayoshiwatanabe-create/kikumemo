@@ -397,3 +397,4 @@ describe('RecordScreen', () => {
     alertSpy.mockRestore();
   });
 });
+

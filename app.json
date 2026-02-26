@@ -1,1 +1,48 @@
-null
+{
+  "expo": {
+    "name": "キクメモ (KikuMemo)",
+    "slug": "kikumemo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "kikumemo",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kikumemo.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "キクメモは会議の音声を録音し、AIで議事録を生成するためにマイクへのアクセスが必要です。",
+        "NSSpeechRecognitionUsageDescription": "キクメモは音声をテキストに変換するために音声認識サービスを利用します。"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kikumemo.app",
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    },
+    "owner": "your-expo-username",
+    "description": "キクメモは、AIを活用して会議の音声を自動で議事録に変換する革新的なサービスです。話すことに集中しながら、重要な決定事項、ToDo、キーポイントを逃さず記録し、瞬時に整理された議事録を生成します。あなたの「書く」を邪魔せず、「記憶」を拡張し、まるで魔法のような体験を提供します。",
+    "privacyPolicyUrl": "https://www.kikumemo.com/privacy-policy"
+  }
+}

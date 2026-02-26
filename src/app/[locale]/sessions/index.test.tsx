@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } => '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SessionsScreen from './index';
 import { useI18n } from '@/i18n';
@@ -227,3 +227,4 @@ describe('SessionsScreen', () => {
     expect(mockPush).toHaveBeenCalledWith('/en/sessions/session-1');
   });
 });
+

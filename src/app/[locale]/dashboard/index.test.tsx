@@ -130,3 +130,4 @@ describe('DashboardScreen', () => {
     expect(mockPush).toHaveBeenCalledWith('/en/sessions');
   });
 });
+
