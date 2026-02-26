@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { useRouter } from "next/navigation";
 import { RecordingSession } from "@/types";
+import { useSession } from "next-auth/react"; // Import useSession
 
 const mockSessions: RecordingSession[] = [
   {
@@ -41,12 +42,44 @@ const mockSessions: RecordingSession[] = [
 export default function SessionsScreen() {
   const { t, lang } = useI18n();
   const router = useRouter();
-  const [sessions] = useState<RecordingSession[]>(mockSessions); // In a real app, fetch from API
+  const { data: session, status } = useSession();
+  const [sessions, setSessions] = useState<RecordingSession[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push(`/${lang}/auth/login`);
+      return;
+    }
+
+    const fetchSessions = async () => {
+      setLoading(true);
+      // In a real app, fetch from API:
+      // const response = await fetch(`/api/sessions`); // Assuming an API endpoint for all sessions
+      // const data = await response.json();
+      // setSessions(data);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+      setSessions(mockSessions);
+      setLoading(false);
+    };
+
+    if (status === "authenticated") {
+      fetchSessions();
+    }
+  }, [status, lang, router]);
 
   const handleSessionClick = (sessionId: string) => {
-    // Construct the path correctly, including the locale segment
     router.push(`/${lang}/sessions/${sessionId}`);
   };
+
+  if (loading || status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">

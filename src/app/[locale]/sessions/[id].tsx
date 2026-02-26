@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useI18n } from "@/i18n";
 import { RecordingSession, AISummaryResponse } from "@/types";
+import { useSession } from "next-auth/react"; // Import useSession
+import { useRouter } from "next/navigation"; // Import useRouter
 
 const mockSessionDetail: RecordingSession = {
   id: "1",
@@ -43,28 +45,40 @@ const mockAISummary: AISummaryResponse = {
 
 export default function SessionDetailScreen() {
   const params = useParams();
-  // useParams can return string or string[], so ensure it's a string.
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const { t, lang } = useI18n(); // Added `lang` to use for `toLocaleDateString`
-  const [session, setSession] = useState<RecordingSession | null>(null);
+  const { t, lang } = useI18n();
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  const [sessionData, setSessionData] = useState<RecordingSession | null>(null);
   const [aiOutput, setAiOutput] = useState<AISummaryResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push(`/${lang}/auth/login`);
+      return;
+    }
+
     const fetchSessionData = async () => {
       setLoading(true);
+      // In a real app, you'd fetch from your API:
+      // const response = await fetch(`/api/sessions/${id}`);
+      // const data = await response.json();
+      // setSessionData(data.session);
+      // setAiOutput(data.aiOutput);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      setSession(mockSessionDetail);
+      setSessionData(mockSessionDetail);
       setAiOutput(mockAISummary);
       setLoading(false);
     };
 
-    if (id) { // Only fetch if id is available
+    if (id && status === "authenticated") {
       fetchSessionData();
     }
-  }, [id]);
+  }, [id, status, lang, router]);
 
-  if (loading) {
+  if (loading || status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="flex flex-col items-center">
@@ -75,7 +89,7 @@ export default function SessionDetailScreen() {
     );
   }
 
-  if (!session) {
+  if (!sessionData) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
         <p className="text-xl text-red-500 text-center">{t("session.notFound")}</p>
@@ -86,20 +100,20 @@ export default function SessionDetailScreen() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-4xl mx-auto pb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{session.title}</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t(`session.status.${session.status}`)}</p>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{sessionData.title}</h1>
+        <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t(`session.status.${sessionData.status}`)}</p>
 
-        {session.transcript && (
+        {sessionData.transcript && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t("session.transcript")}</h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{session.transcript}</p>
+            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{sessionData.transcript}</p>
           </div>
         )}
 
-        {session.user_notes && (
+        {sessionData.user_notes && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t("session.userNotes")}</h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{session.user_notes}</p>
+            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{sessionData.user_notes}</p>
           </div>
         )}
 

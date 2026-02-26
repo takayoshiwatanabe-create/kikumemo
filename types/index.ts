@@ -23,6 +23,7 @@ export interface UsageStats {
 }
 
 // Recording Session
+import { Language } from '@/i18n/translations'; // Import Language type
 export interface RecordingSession {
   id: string;
   userId: string;
@@ -33,7 +34,7 @@ export interface RecordingSession {
   user_notes?: string | null; // Can be null
   ai_summary?: string | null; // Can be null
   duration_seconds: number; // Corrected to match DB schema
-  language_code: string;
+  language_code: Language; // Use Language type
   createdAt: Date;
   updatedAt?: Date | null; // Can be null
 }
@@ -66,7 +67,7 @@ export interface AISummaryResponse {
 // User Preferences
 export interface UserPreferences {
   user_id?: string; // Optional as it might be part of the User object or implicit
-  language: string;
+  language: Language; // Use Language type
   timezone: string;
   audioQuality: 'standard' | 'high';
   autoSave: boolean;
@@ -78,7 +79,7 @@ export interface RegisterRequest {
   email: string;
   name: string;
   password: string;
-  language?: string;
+  language?: Language; // Use Language type
 }
 
 export interface LoginRequest {
@@ -92,7 +93,7 @@ export interface RefreshRequest {
 
 export interface CreateSessionRequest {
   title: string;
-  language?: string;
+  language?: Language; // Use Language type
 }
 
 export interface UploadAudioRequest {
@@ -111,13 +112,13 @@ export interface SessionStatusResponse {
 export interface ProcessRequest {
   transcript: string;
   userNotes: string;
-  language: string;
+  language: Language; // Use Language type
 }
 
 export interface SummarizeRequest {
   transcript: string;
   userNotes: string;
-  language: string;
+  language: Language; // Use Language type
   meetingContext?: string;
 }
 
@@ -146,4 +147,5 @@ export interface AudioData {
   volume?: number;
   frequencies?: number[];
 }
+
 

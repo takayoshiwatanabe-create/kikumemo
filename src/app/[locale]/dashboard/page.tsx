@@ -1,11 +1,10 @@
 import DashboardScreen from "./index";
 import { Metadata } from "next";
-import { translations } from "@/i18n/translations"; // Import translations to get localized metadata
-import { Language } from "@/i18n/translations"; // Import Language type
+import { translations } from "@/i18n/translations";
+import { Language } from "@/i18n/translations";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
-  const lang = params.locale; // Use locale from params for server-side metadata generation
-  // Ensure lang is a valid Language type for indexing translations
+  const lang = params.locale;
   const t = (key: string, vars?: Record<string, string | number>) => {
     let text = translations[lang as Language]?.[key] || translations.en[key] || key;
     if (vars) {
@@ -18,7 +17,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 
   return {
     title: `${t("dashboard.title")} - ${t("header.appName")}`,
-    description: t("dashboard.welcomeMessage", { name: "" }).replace(", !", "."), // Remove name placeholder for description
+    description: t("dashboard.welcomeMessage", { name: "" }).replace(", !", "."),
   };
 }
 

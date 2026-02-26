@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { UserPreferences } from "@/types";
 import { Language } from "@/i18n/translations";
+import { useSession } from "next-auth/react"; // Import useSession
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function SettingsScreen() {
   const { t, lang, setLanguage, isRTL } = useI18n();
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
   const [preferences, setPreferences] = useState<UserPreferences>({
     language: lang,
     timezone: "Asia/Tokyo",
@@ -14,11 +19,36 @@ export default function SettingsScreen() {
     autoSave: true,
     exportFormat: "markdown",
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push(`/${lang}/auth/login`);
+      return;
+    }
+
+    const fetchPreferences = async () => {
+      setLoading(true);
+      // In a real app, fetch user preferences from API
+      // const response = await fetch(`/api/user/preferences`);
+      // const data = await response.json();
+      // setPreferences(data);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+      setPreferences(prev => ({ ...prev, language: lang })); // Ensure language matches current URL locale
+      setLoading(false);
+    };
+
+    if (status === "authenticated") {
+      fetchPreferences();
+    }
+  }, [status, lang, router]);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
     setPreferences((prev) => ({ ...prev, language: newLang }));
-    setLanguage(newLang); // Assuming setLanguage updates global i18n context and URL
+    setLanguage(newLang);
+    // Call API to update user preferences
+    console.log("Language changed to:", newLang);
   };
 
   const handleToggleAutoSave = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +57,15 @@ export default function SettingsScreen() {
     // Call API to update user preferences
     console.log("Auto save toggled:", value);
   };
+
+  if (loading || status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen bg-gray-100 dark:bg-gray-900 p-6 ${isRTL ? "rtl" : "ltr"}`}>

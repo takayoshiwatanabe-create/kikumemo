@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { translations, Language } from "@/i18n/translations";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
-  const lang = params.locale; // Use locale from params for server-side metadata generation
+  const lang = params.locale;
   const t = (key: string, vars?: Record<string, string | number>) => {
     let text = translations[lang as Language]?.[key] || translations.en[key] || key;
     if (vars) {
