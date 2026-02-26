@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
       }
     }
     return text;
-  };
+    };
 
   return {
     title: `${t("sessions.title")} - ${t("header.appName")}`,
