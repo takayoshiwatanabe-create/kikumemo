@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Adapter } from "next-auth/adapters";
 import { User as NextAuthUser } from "next-auth"; // Import NextAuth's User type
+import { JWT } from "next-auth/jwt"; // Import JWT type
 
 const prisma = new PrismaClient();
 
@@ -69,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
       }
-      return token;
+      return token as JWT; // Explicitly cast to JWT
     },
     async session({ session, token }) {
       if (token) {

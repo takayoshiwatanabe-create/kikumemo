@@ -5,9 +5,8 @@ import { headers } from "next/headers";
 import { translations, Language } from "@/i18n/translations";
 
 // Dynamic metadata for session detail page
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const requestHeaders = headers();
-  const lang = getDeviceLanguage(requestHeaders);
+export async function generateMetadata({ params }: { params: { id: string, locale: string } }): Promise<Metadata> {
+  const lang = params.locale; // Use locale from params for server-side metadata generation
   const t = (key: string, vars?: Record<string, string | number>) => {
     let text = translations[lang as Language]?.[key] || translations.en[key] || key;
     if (vars) {

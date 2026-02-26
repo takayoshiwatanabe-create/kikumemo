@@ -27,7 +27,7 @@ export default function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const currentLocale: Language = SUPPORTED_LANGUAGES.includes(params.locale as Language) ? (params.locale as Language) : "ja";
 
   return (
-    <html lang={currentLocale} dir={dir(currentLocale)}>
+    <html lang={currentLocale} dir={dir(currentLocale)} suppressHydrationWarning>
       <body>
         <I18nProvider initialLocale={currentLocale}>
           <div className="flex min-h-screen flex-col lg:flex-row">

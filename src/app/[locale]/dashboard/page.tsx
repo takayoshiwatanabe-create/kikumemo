@@ -5,9 +5,8 @@ import { headers } from "next/headers"; // Import headers for server-side langua
 import { translations } from "@/i18n/translations"; // Import translations to get localized metadata
 import { Language } from "@/i18n/translations"; // Import Language type
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = headers();
-  const lang = getDeviceLanguage(requestHeaders);
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+  const lang = params.locale; // Use locale from params for server-side metadata generation
   // Ensure lang is a valid Language type for indexing translations
   const t = (key: string, vars?: Record<string, string | number>) => {
     let text = translations[lang as Language]?.[key] || translations.en[key] || key;

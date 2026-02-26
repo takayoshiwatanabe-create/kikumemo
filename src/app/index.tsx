@@ -15,3 +15,5 @@ export default function AppRootRedirect() {
   const lang = getDeviceLanguage(requestHeaders); // Pass headers to getDeviceLanguage
   redirect(`/${lang}/dashboard`);
 }
+
+

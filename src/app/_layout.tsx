@@ -9,7 +9,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // The `lang` attribute is set to a default here, but will be overridden by the `[locale]/_layout.tsx`
   // which sets the correct language based on the URL segment.
   return (
-    <html lang="en"> {/* Default to 'en' or a neutral language for the very root, overridden by [locale] */}
+    <html lang="en" suppressHydrationWarning> {/* Default to 'en' or a neutral language for the very root, overridden by [locale] */}
       <body>
         {children}
       </body>

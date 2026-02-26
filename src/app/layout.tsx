@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 // It wraps all other layouts and pages.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning>
       {" "}
       {/* Default to 'ja' for the very root, overridden by [locale] */}
       <body>{children}</body>

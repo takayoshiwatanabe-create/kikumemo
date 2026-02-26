@@ -68,10 +68,10 @@ export async function POST(req: Request) {
       maxAge: authOptions.session?.maxAge, // Use the same maxAge as the session
     });
 
-    // Optionally, generate a new refresh token and invalidate the old one
-    // For simplicity, we're just returning a new access token here.
-    // A more robust solution would involve refresh token rotation.
-
+    // For NextAuth v5, refresh tokens are typically managed internally by the NextAuth library
+    // when using the JWT strategy. If you are implementing a custom refresh token flow,
+    // ensure it aligns with NextAuth's session management or is entirely separate.
+    // This API route assumes a custom refresh token flow where the client explicitly sends a refresh token.
     return NextResponse.json(
       { message: "Token refreshed successfully", accessToken: newAccessToken },
       { status: 200 }

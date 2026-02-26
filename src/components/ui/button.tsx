@@ -37,20 +37,11 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    // When `asChild` is true, we expect `children` to be a single React element.
-    // This element will then receive the merged class names and ref.
-    // If `asChild` is false, we render a `button` element.
-    // The `Comp` variable is not directly used for rendering the child,
-    // but rather to determine the rendering logic.
-    // We don't need `React.Fragment` here if we're cloning the child.
-
-    const content = props.children;
-
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     // If asChild is true, we need to clone the child and pass props.
     // This requires `React.Children.only` to ensure there's only one child.
     if (asChild) {
-      const child = React.Children.only(content);
+      const child = React.Children.only(children);
       if (!React.isValidElement(child)) {
         throw new Error("Children must be a single valid React element when `asChild` is true.");
       }
@@ -67,7 +58,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {content}
+        {children}
       </button>
     );
   }

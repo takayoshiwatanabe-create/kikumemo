@@ -53,6 +53,11 @@ export async function POST(req: Request) {
       maxAge: authOptions.session?.maxAge,
     });
 
+    // For NextAuth v5, the `accessToken` is typically set as a cookie by the `NextAuth` handler.
+    // If you need to return it in the response body for a custom client-side flow,
+    // ensure your client handles it securely (e.g., storing in httpOnly cookie).
+    // However, the standard NextAuth flow manages session cookies automatically.
+    // Returning it here might be for a specific custom client-side auth implementation.
     return NextResponse.json(
       { message: "Login successful", accessToken: token },
       { status: 200 }
