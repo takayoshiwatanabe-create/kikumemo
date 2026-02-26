@@ -1,6 +1,7 @@
 import SettingsScreen from "./index";
 import { Metadata } from "next";
-import { translations, Language } from "@/i18n/translations";
+import { translations } from "@/i18n/translations";
+import { Language } from "@/i18n"; // Import Language from i18n/index.ts
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const lang = params.locale;

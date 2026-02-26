@@ -8,6 +8,37 @@ import { Session } from "next-auth"; // Import Session type
 
 const prisma = new PrismaClient();
 
+// Extend the Session and JWT types to include custom properties
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      name: string;
+      image?: string | null;
+      subscription_plan: string; // Add subscription_plan
+    } & Session["user"];
+  }
+
+  interface User {
+    id: string; // Ensure id is present
+    email: string; // Ensure email is present
+    name: string; // Ensure name is present
+    image?: string | null; // Ensure image is present
+    subscription_plan: string; // Add subscription_plan to User
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    email: string;
+    name: string;
+    picture?: string | null;
+    subscription_plan: string; // Add subscription_plan
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -57,18 +88,18 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image; // Map image to picture
-        (token as any).subscription_plan = (user as any).subscription_plan; // Cast to any to access custom property
+        token.subscription_plan = (user as any).subscription_plan; // Cast to any to access custom property
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         // Ensure session.user properties are correctly typed
-        session.user.id = token.id as string;
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
-        session.user.image = token.picture as string; // Map picture to image
-        (session.user as any).subscription_plan = (token as any).subscription_plan;
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.image = token.picture; // Map picture to image
+        session.user.subscription_plan = token.subscription_plan;
       }
       return session;
     },

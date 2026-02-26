@@ -43,6 +43,12 @@ export async function POST(
       return NextResponse.json({ message: "Session not found" }, { status: 404 });
     }
 
+    // Ensure the session is in 'recording' status before allowing upload
+    // This prevents uploading to a session that's already processing or completed.
+    if (recordingSession.status !== 'recording') {
+      return NextResponse.json({ message: `Session is not in 'recording' status. Current status: ${recordingSession.status}` }, { status: 409 });
+    }
+
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
     if (!bucketName) {
       throw new Error("AWS_S3_BUCKET_NAME is not defined");
@@ -68,7 +74,7 @@ export async function POST(
       data: {
         audio_file_path: fileName,
         user_notes: userNotes,
-        status: "processing",
+        status: "processing", // Update status to 'processing' after successful upload
       },
     });
 
@@ -78,6 +84,11 @@ export async function POST(
     );
   } catch (error) {
     console.error("Error uploading audio:", error);
+    // If an error occurs during upload, set session status to 'failed'
+    await prisma.recording_sessions.update({
+      where: { id: sessionId },
+      data: { status: "failed" },
+    });
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { UserPreferences } from "@/types";
-import { Language } from "@/i18n/translations";
+import { Language } from "@/i18n"; // Import Language from i18n/index.ts
 import { useSession } from "next-auth/react"; // Import useSession
 import { useRouter } from "next/navigation"; // Import useRouter
 
@@ -49,6 +49,8 @@ export default function SettingsScreen() {
     setLanguage(newLang);
     // Call API to update user preferences
     console.log("Language changed to:", newLang);
+    // Redirect to the new locale path to ensure the entire app re-renders with the new language
+    router.push(`/${newLang}/settings`);
   };
 
   const handleToggleAutoSave = (e: React.ChangeEvent<HTMLInputElement>) => {

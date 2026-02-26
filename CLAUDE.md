@@ -95,7 +95,6 @@ CREATE TABLE users (
   id VARCHAR(36) PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,
   name VARCHAR(100) NOT NULL,
-  password_hash VARCHAR(255) NOT NULL, -- Added password_hash for authentication
   avatar_url VARCHAR(500),
   subscription_plan ENUM('free', 'monthly', 'yearly') DEFAULT 'free',
   subscription_expires DATETIME,
@@ -439,4 +438,3 @@ N/A
 - Default language: ja (Japanese)
 - RTL support required for Arabic (ar)
 - Use isRTL flag from i18n module for layout adjustments
-

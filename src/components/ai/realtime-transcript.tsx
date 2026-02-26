@@ -10,6 +10,7 @@ interface RealtimeTranscriptProps {
   isProcessing: boolean;
 }
 
+// TypewriterVariants from CLAUDE.md
 const TypewriterVariants = {
   hidden: { opacity: 0 },
   visible: {

@@ -5,7 +5,9 @@ import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 import Sidebar from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
-import { SessionProvider } from "next-auth/react"; // Ensure SessionProvider is imported
+// SessionProvider should wrap the entire app in src/app/layout.tsx, not here.
+// The import for SessionProvider is correctly placed in src/app/layout.tsx.
+// This line should be removed.
 
 export default function LocaleLayout({
   children,

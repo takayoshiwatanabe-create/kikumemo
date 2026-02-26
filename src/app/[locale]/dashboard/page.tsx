@@ -1,7 +1,7 @@
 import DashboardScreen from "./index";
 import { Metadata } from "next";
 import { translations } from "@/i18n/translations";
-import { Language } from "@/i18n/translations";
+import { Language } from "@/i18n"; // Import Language from i18n/index.ts
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const lang = params.locale;
@@ -17,6 +17,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 
   return {
     title: `${t("dashboard.title")} - ${t("header.appName")}`,
+    // The original description had a trailing ", !" which was likely a placeholder artifact.
+    // Correcting it to end with a period for better grammar.
     description: t("dashboard.welcomeMessage", { name: "" }).replace(", !", "."),
   };
 }

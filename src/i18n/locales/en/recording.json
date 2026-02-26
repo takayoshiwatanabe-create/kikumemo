@@ -1,0 +1,17 @@
+{
+  "title": "New Recording",
+  "instructions": "Enter a meeting title and start recording. AI will transcribe and summarize in real-time.",
+  "sessionTitle": "Meeting Title",
+  "sessionTitlePlaceholder": "e.g., Project Kick-off Meeting",
+  "startButton": "Start Recording",
+  "stopButton": "Stop Recording",
+  "pauseButton": "Pause",
+  "resumeButton": "Resume",
+  "titleRequired": "Meeting title is required.",
+  "permissionDenied": "Microphone access denied. Please check your settings.",
+  "realtimeTranscript": "Real-time Transcript",
+  "listening": "Listening for audio",
+  "processingAudio": "Processing audio",
+  "startRecordingPrompt": "Start recording to experience the AI magic!",
+  "listeningChunk": "..."
+}

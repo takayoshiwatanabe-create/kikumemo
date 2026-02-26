@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { OpenAI } from "openai";
-import { DeepgramClient, LiveTranscriptionEvents } from "@deepgram/sdk";
+import { DeepgramClient } from "@deepgram/sdk"; // Removed LiveTranscriptionEvents as it's not used here
 import { ProcessRequest, SummarizeRequest, SummarizeResponse } from "@/types";
 import { Session } from "next-auth"; // Import Session type
 
@@ -43,6 +43,13 @@ export async function POST(
       return NextResponse.json({ message: "Session not found" }, { status: 404 });
     }
 
+    // Ensure status is 'processing' before proceeding
+    // The design spec indicates status 'processing' is set after upload.
+    // This check ensures we only proceed if the session is ready for processing.
+    if (recordingSession.status !== 'processing') {
+      return NextResponse.json({ message: `Session is not in 'processing' status. Current status: ${recordingSession.status}` }, { status: 409 });
+    }
+
     if (!recordingSession.audio_file_path) {
       return NextResponse.json({ message: "Audio file not found for this session" }, { status: 400 });
     }
@@ -68,11 +75,12 @@ export async function POST(
     let fullTranscript = userProvidedTranscript;
 
     // 2. Transcribe audio using OpenAI Whisper API (or Deepgram as fallback)
+    // Only transcribe if userProvidedTranscript is empty, otherwise use it directly.
     if (!userProvidedTranscript || userProvidedTranscript.trim() === "") {
       try {
         // Use OpenAI Whisper
         const transcription = await openai.audio.transcriptions.create({
-          file: new File([audioBuffer], "audio.webm", { type: "audio/webm" }),
+          file: new File([audioBuffer], "audio.webm", { type: "audio/webm" }), // Use a generic filename and type
           model: "whisper-1",
           language: language,
         });
@@ -107,7 +115,9 @@ export async function POST(
       meetingContext: recordingSession.title,
     };
 
-    const aiSummaryResponse = await fetch(`${request.url.split('/api/sessions')[0]}/api/ai/summarize`, {
+    // Construct the full URL for the internal API call
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+    const aiSummaryResponse = await fetch(`${baseUrl}/api/ai/summarize`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

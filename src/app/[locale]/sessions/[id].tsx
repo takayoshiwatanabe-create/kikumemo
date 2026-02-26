@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n";
 import { RecordingSession, AISummaryResponse } from "@/types";
 import { useSession } from "next-auth/react"; // Import useSession
 import { useRouter } from "next/navigation"; // Import useRouter
+import { Language } from "@/i18n"; // Import Language from i18n/index.ts
 
 const mockSessionDetail: RecordingSession = {
   id: "1",
@@ -45,6 +46,7 @@ const mockAISummary: AISummaryResponse = {
 
 export default function SessionDetailScreen() {
   const params = useParams();
+  // Ensure `id` is always a string, even if `params.id` is an array (though it shouldn't be for a single dynamic segment).
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const { t, lang } = useI18n();
   const router = useRouter();
@@ -101,6 +103,7 @@ export default function SessionDetailScreen() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-4xl mx-auto pb-12">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{sessionData.title}</h1>
+        {/* Using a type assertion for the translation key to ensure it matches the i18n structure */}
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t(`session.status.${sessionData.status}` as keyof typeof translations.en.session.status)}</p>
 
         {sessionData.transcript && (

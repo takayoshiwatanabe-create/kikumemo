@@ -106,4 +106,3 @@ export function useWebSocket(url: string | null, options?: WebSocketOptions) {
     connect, // Expose connect to allow manual reconnection if needed
   };
 }
-
