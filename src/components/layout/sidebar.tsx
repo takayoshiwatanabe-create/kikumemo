@@ -60,13 +60,13 @@ export default function Sidebar({ isOpen, onClose, isStatic = false }: SidebarPr
             <ul className="space-y-4">
               {navItems.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} passHref>
-                    <span
+                  <Link href={item.href} passHref legacyBehavior>
+                    <a
                       className="block text-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                       onClick={onClose} // Close sidebar on navigation
                     >
                       {item.name}
-                    </span>
+                    </a>
                   </Link>
                 </li>
               ))}

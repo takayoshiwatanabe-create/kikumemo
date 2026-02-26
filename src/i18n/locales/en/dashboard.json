@@ -1,0 +1,14 @@
+{
+  "title": "Dashboard",
+  "welcomeMessage": "Welcome, {{name}}!",
+  "recentSessions": "Recent Sessions",
+  "noRecentSessions": "No recent sessions.",
+  "startNewRecording": "Start New Recording",
+  "viewAllSessions": "View All Sessions",
+  "usageSummary": "Usage Summary",
+  "meetingsGenerated": "Meetings Generated",
+  "freeMeetingsLeft": "Free Meetings Left",
+  "totalDuration": "Total Recording Duration",
+  "upgradePlan": "Upgrade Plan",
+  "minutes": "minutes"
+}

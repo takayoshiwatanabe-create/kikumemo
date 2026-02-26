@@ -29,8 +29,8 @@ export default function LocaleLayout({
           <div className="flex min-h-screen flex-col lg:flex-row">
             {" "}
             {/* Added lg:flex-row for sidebar layout */}
-            <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />{" "}
-            {/* Sidebar for large screens */}
+            {/* Sidebar for large screens, always static here */}
+            <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />
             <div className="flex flex-1 flex-col">
               <Header /> {/* Add the Header component here */}
               <main className="flex-1">{children}</main>

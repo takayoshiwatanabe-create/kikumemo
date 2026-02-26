@@ -41,7 +41,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // When `asChild` is true, we expect `children` to be a single React element.
     // This element will then receive the merged class names and ref.
     // If `asChild` is false, we render a `button` element.
-    const Comp = asChild ? React.Fragment : "button"; // Comp is not directly used for rendering the child
+    // The `Comp` variable is not directly used for rendering the child,
+    // but rather to determine the rendering logic.
+    // We don't need `React.Fragment` here if we're cloning the child.
 
     const content = props.children;
 
