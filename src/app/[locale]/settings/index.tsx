@@ -1,4 +1,4 @@
-"use client"; // This component uses client-side hooks like useState and useI18n
+"use client";
 
 import React, { useState } from "react";
 import { useI18n } from "@/i18n";
@@ -79,4 +79,3 @@ export default function SettingsScreen() {
     </div>
   );
 }
-

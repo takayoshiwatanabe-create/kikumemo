@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { encode, decode } from "next-auth/jwt";
 import { authOptions } from "../[...nextauth]/route";
 import { RefreshRequest } from "@/types";
+import { PrismaClient } from "@prisma/client"; // Import PrismaClient to fetch user data
+
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -17,7 +20,9 @@ export async function POST(req: Request) {
       secret: process.env.NEXTAUTH_SECRET!,
     });
 
-    if (!decodedToken || !decodedToken.id || !decodedToken.email || !decodedToken.name) {
+    // The decoded token might be null or not have the expected properties.
+    // Ensure `decodedToken` is not null and has the required properties before accessing them.
+    if (!decodedToken || typeof decodedToken.id !== 'string') { // Only ID is strictly needed to fetch user
       return NextResponse.json({ message: "Invalid refresh token" }, { status: 401 });
     }
 
@@ -25,13 +30,30 @@ export async function POST(req: Request) {
     // to ensure it's still valid and hasn't been revoked.
     // For this example, we'll assume the decoded token is sufficient.
 
+    // Fetch the latest user data from the database to ensure the new access token is up-to-date
+    const user = await prisma.user.findUnique({
+      where: { id: decodedToken.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatar_url: true,
+        subscription_plan: true, // Include subscription_plan
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found for refresh token" }, { status: 404 });
+    }
+
     // Generate a new access token (JWT)
     const newAccessToken = await encode({
       token: {
-        id: decodedToken.id,
-        email: decodedToken.email,
-        name: decodedToken.name,
-        picture: decodedToken.picture,
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        picture: user.avatar_url,
+        subscription_plan: user.subscription_plan, // Add subscription_plan to the new token
         // Potentially add other user data from the decoded refresh token
       },
       secret: process.env.NEXTAUTH_SECRET!,
@@ -49,4 +71,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Internal server error or invalid token" }, { status: 500 });
   }
 }
-

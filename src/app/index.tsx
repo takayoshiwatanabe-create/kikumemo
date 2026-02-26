@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"; // Correct hook for Next.js App Router
-import { getDeviceLanguage } from "@/i18n"; // Import the function to get detected language
+import { redirect } from "next/navigation";
+import { getDeviceLanguage } from "@/i18n";
 
 export default function AppRootRedirect() {
   // This file acts as the root redirector based on detected language.
@@ -7,4 +7,3 @@ export default function AppRootRedirect() {
   const lang = getDeviceLanguage();
   redirect(`/${lang}/dashboard`);
 }
-

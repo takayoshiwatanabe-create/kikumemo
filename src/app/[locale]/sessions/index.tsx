@@ -1,8 +1,8 @@
-"use client"; // This component uses client-side hooks like useRouter and useState
+"use client";
 
 import React, { useState } from "react";
 import { useI18n } from "@/i18n";
-import { useRouter } from "next/navigation"; // Correct hook for Next.js App Router
+import { useRouter } from "next/navigation";
 import { RecordingSession } from "@/types";
 
 const mockSessions: RecordingSession[] = [
@@ -39,7 +39,7 @@ const mockSessions: RecordingSession[] = [
 ];
 
 export default function SessionsScreen() {
-  const { t, lang } = useI18n(); // Get current language from i18n context
+  const { t, lang } = useI18n();
   const router = useRouter();
   const [sessions] = useState<RecordingSession[]>(mockSessions); // In a real app, fetch from API
 
@@ -83,4 +83,3 @@ export default function SessionsScreen() {
     </div>
   );
 }
-

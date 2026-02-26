@@ -15,8 +15,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       image?: string | null; // avatar_url maps to image in NextAuth
-      // Add other properties from your user model here if needed in the session
-      // e.g., subscription_plan: 'free' | 'monthly' | 'yearly';
+      subscription_plan?: 'free' | 'monthly' | 'yearly'; // Added subscription_plan
     } & DefaultSession["user"];
   }
 
@@ -29,8 +28,7 @@ declare module "next-auth" {
     email: string;
     name: string;
     avatar_url?: string | null; // Matches your database schema
-    // Add other properties from your user model here
-    // e.g., subscription_plan: 'free' | 'monthly' | 'yearly';
+    subscription_plan?: 'free' | 'monthly' | 'yearly'; // Added subscription_plan
   }
 }
 
@@ -45,12 +43,10 @@ declare module "next-auth/jwt" {
     picture?: string | null; // Corresponds to avatar_url
     accessToken?: string;
     refreshToken?: string;
-    // Add other properties from your user model here if needed in the JWT
-    // e.g., subscription_plan: 'free' | 'monthly' | 'yearly';
+    subscription_plan?: 'free' | 'monthly' | 'yearly'; // Added subscription_plan
   }
 }
 
 // Note: The `types/index.ts` file already defines `LoginRequest`, `RegisterRequest`, `RefreshRequest`.
 // This `auth.d.ts` file is specifically for extending NextAuth's internal types.
 // No need to duplicate `LoginRequest` etc. here.
-

@@ -3,16 +3,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { Adapter } from "next-auth/adapters"; // Import Adapter type
-// No need to import JWT from 'next-auth/jwt' here, it's handled by module augmentation in types/auth.d.ts
+import { Adapter } from "next-auth/adapters";
 
 const prisma = new PrismaClient();
 
-// The module augmentation for NextAuth types is now in types/auth.d.ts
-// so we don't need to declare them here.
-
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter, // Cast PrismaAdapter to Adapter type
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -48,7 +44,8 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           image: user.avatar_url, // Map avatar_url to image for NextAuth User type
-          // Add any other non-sensitive user data needed for the session
+          // Include subscription_plan as per design spec if needed in session/JWT
+          subscription_plan: user.subscription_plan,
         };
       },
     }),
@@ -57,21 +54,16 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  jwt: {
-    // The `jwt` option here is for NextAuth v4. In v5, it's typically configured differently or inferred.
-    // For v5, the secret is usually passed directly to NextAuth or derived from NEXTAUTH_SECRET env var.
-    // This `jwt` object might be deprecated or changed in v5.
-    // Keeping it for now as it was in the original code, but be aware for v5.
-    secret: process.env.NEXTAUTH_SECRET,
-  },
   callbacks: {
     async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.picture = user.image; // Map user.image to token.picture
-        // Add custom properties from the user object if needed
+        // Type assertion for user to match the extended User type
+        const extendedUser = user as { id: string; email: string; name: string; image?: string | null; subscription_plan?: string };
+        token.id = extendedUser.id;
+        token.email = extendedUser.email;
+        token.name = extendedUser.name;
+        token.picture = extendedUser.image; // Map user.image to token.picture
+        token.subscription_plan = extendedUser.subscription_plan; // Add subscription_plan to token
       }
       if (account) {
         token.accessToken = account.access_token;
@@ -89,7 +81,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.image = token.picture as string | null | undefined; // Ensure type matches
-        // Add custom properties to session.user
+        session.user.subscription_plan = token.subscription_plan as 'free' | 'monthly' | 'yearly' | undefined; // Add subscription_plan to session
       }
       return session;
     },
@@ -98,10 +90,9 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/login", // Custom sign-in page
     error: "/auth/error", // Custom error page
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // The secret is configured here for NextAuth v5
 };
 
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-

@@ -1,6 +1,5 @@
-import SessionDetailScreen from "../[id]"; // Corrected import path
+import SessionDetailScreen from "../[id]";
 
-export default function SessionDetailPage() {
+export default function SessionDetailPage({ params }: { params: { id: string } }) {
   return <SessionDetailScreen />;
 }
-

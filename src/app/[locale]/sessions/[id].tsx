@@ -1,7 +1,7 @@
-"use client"; // This component uses client-side hooks like useParams and useState
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation"; // Correct hook for Next.js App Router
+import { useParams } from "next/navigation";
 import { useI18n } from "@/i18n";
 import { RecordingSession, AISummaryResponse } from "@/types";
 
@@ -43,8 +43,9 @@ const mockAISummary: AISummaryResponse = {
 
 export default function SessionDetailScreen() {
   const params = useParams();
-  const id = params.id as string; // Get id from params
-  const { t } = useI18n();
+  // useParams can return string or string[], so ensure it's a string.
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const { t, lang } = useI18n(); // Added `lang` to use for `toLocaleDateString`
   const [session, setSession] = useState<RecordingSession | null>(null);
   const [aiOutput, setAiOutput] = useState<AISummaryResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,7 +125,7 @@ export default function SessionDetailScreen() {
                 <ul className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1">
                   {aiOutput.todos.map((todo, index) => (
                     <li key={index}>
-                      {todo.task} ({t("common.assignee")}: {todo.assignee}{todo.deadline ? `, ${t("common.deadline")}: ${todo.deadline}` : ''})
+                      {todo.task} ({t("common.assignee")}: {todo.assignee}{todo.deadline ? `, ${t("common.deadline")}: ${new Date(todo.deadline).toLocaleDateString(lang)}` : ''})
                     </li>
                   ))}
                 </ul>
@@ -158,4 +159,3 @@ export default function SessionDetailScreen() {
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-"use client"; // This component uses client-side hooks like useI18n
+"use client";
 
 import React from "react";
 import { useI18n } from "@/i18n";
@@ -29,4 +29,3 @@ export default function RecordScreen() {
     </div>
   );
 }
-
