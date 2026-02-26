@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native"; // These are React Native components
 import { useI18n } from "@/i18n";
-import { useRouter } from "expo-router";
+import { useRouter } from "expo-router"; // This is Expo-specific
 import { useState } from "react";
 import { RecordingSession } from "@/types";
 
@@ -10,8 +10,8 @@ const mockSessions: RecordingSession[] = [
     userId: "user1",
     title: "Project Kick-off Meeting",
     status: "completed",
-    durationSeconds: 3600,
-    languageCode: "en",
+    duration_seconds: 3600, // Changed from durationSeconds to duration_seconds
+    language_code: "en",
     createdAt: new Date("2023-10-26T10:00:00Z"),
     updatedAt: new Date("2023-10-26T11:00:00Z"),
   },
@@ -20,8 +20,8 @@ const mockSessions: RecordingSession[] = [
     userId: "user1",
     title: "Weekly Sync",
     status: "processing",
-    durationSeconds: 1800,
-    languageCode: "ja",
+    duration_seconds: 1800, // Changed from durationSeconds to duration_seconds
+    language_code: "ja",
     createdAt: new Date("2023-10-25T14:30:00Z"),
     updatedAt: new Date("2023-10-25T14:45:00Z"),
   },
@@ -30,8 +30,8 @@ const mockSessions: RecordingSession[] = [
     userId: "user1",
     title: "Client Demo Feedback",
     status: "failed",
-    durationSeconds: 1200,
-    languageCode: "es",
+    duration_seconds: 1200, // Changed from durationSeconds to duration_seconds
+    language_code: "es",
     createdAt: new Date("2023-10-24T09:00:00Z"),
     updatedAt: new Date("2023-10-24T09:10:00Z"),
   },
@@ -43,7 +43,7 @@ export default function SessionsScreen() {
   const [sessions] = useState<RecordingSession[]>(mockSessions); // In a real app, fetch from API
 
   const renderItem = ({ item }: { item: RecordingSession }) => (
-    <TouchableOpacity style={styles.sessionItem} onPress={() => router.push(`/(app)/sessions/${item.id}`)}>
+    <TouchableOpacity style={styles.sessionItem} onPress={() => router.push(`/${router.segments[0]}/sessions/${item.id}`)}>
       <Text style={styles.sessionTitle}>{item.title}</Text>
       <Text style={styles.sessionStatus}>{t(`session.status.${item.status}`)}</Text>
       <Text style={styles.sessionDate}>{new Date(item.createdAt).toLocaleDateString()}</Text>
@@ -67,7 +67,7 @@ export default function SessionsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ // StyleSheet is React Native specific
   container: {
     flex: 1,
     padding: 24,
@@ -114,3 +114,4 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
 });
+

@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, Switch, Picker } from "react-native";
+import { StyleSheet, Text, View, Switch, Platform } from "react-native"; // These are React Native components
+import { Picker } from "@react-native-picker/picker"; // This is React Native specific
 import { useI18n } from "@/i18n";
 import { useState } from "react";
 import { UserPreferences } from "@/types";
+import { Language } from "@/i18n/translations";
 
 export default function SettingsScreen() {
   const { t, lang, setLanguage, isRTL } = useI18n();
@@ -13,9 +15,9 @@ export default function SettingsScreen() {
     exportFormat: "markdown",
   });
 
-  const handleLanguageChange = (newLang: string) => {
+  const handleLanguageChange = (newLang: Language) => {
     setPreferences((prev) => ({ ...prev, language: newLang }));
-    setLanguage(newLang as any); // Assuming setLanguage updates global i18n context
+    setLanguage(newLang); // Assuming setLanguage updates global i18n context
   };
 
   const handleToggleAutoSave = (value: boolean) => {
@@ -29,10 +31,11 @@ export default function SettingsScreen() {
 
       <View style={styles.settingItem}>
         <Text style={styles.settingLabel}>{t("settings.language")}</Text>
-        <Picker
+        <Picker<Language> // Explicitly type Picker for better type inference
           selectedValue={preferences.language}
           style={styles.picker}
-          onValueChange={(itemValue) => handleLanguageChange(itemValue as string)}
+          onValueChange={(itemValue) => handleLanguageChange(itemValue)}
+          itemStyle={Platform.OS === 'ios' ? styles.pickerItem : undefined}
         >
           <Picker.Item label={t("language.ja")} value="ja" />
           <Picker.Item label={t("language.en")} value="en" />
@@ -60,7 +63,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ // StyleSheet is React Native specific
   container: {
     flex: 1,
     padding: 24,
@@ -97,4 +100,8 @@ const styles = StyleSheet.create({
     height: 50,
     width: 150,
   },
+  pickerItem: { // For iOS specific styling if needed
+    fontSize: 16,
+  },
 });
+

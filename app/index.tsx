@@ -1,4 +1,4 @@
-import { Redirect } from "expo-router";
+import { Redirect } from "next/navigation"; // Changed from "expo-router" to "next/navigation"
 import { lang } from "@/i18n";
 
 export default function AppRootRedirect() {
@@ -6,3 +6,4 @@ export default function AppRootRedirect() {
   // It will redirect to the dashboard of the appropriate locale.
   return <Redirect href={`/${lang}/dashboard`} />;
 }
+

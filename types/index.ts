@@ -32,7 +32,7 @@ export interface RecordingSession {
   transcript?: string;
   user_notes?: string;
   ai_summary?: string;
-  duration_seconds: number;
+  duration_seconds: number; // Corrected to match DB schema
   language_code: string;
   createdAt: Date;
   updatedAt?: Date;

@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma" // Required for PlanetScale
+}
+
+// User Management
+model User {
+  id                 String             @id @default(uuid()) @db.VarChar(36)
+  email              String             @unique @db.VarChar(255)
+  name               String             @db.VarChar(100)
+  avatarUrl          String?            @map("avatar_url") @db.VarChar(500)
+  subscriptionPlan   SubscriptionPlan   @default(free) @map("subscription_plan")
+  subscriptionExpires DateTime?          @map("subscription_expires")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime?          @updatedAt @map("updated_at")
+
+  recordingSessions RecordingSession[]
+  preferences       UserPreferences?
+
+  @@index([email])
+  @@index([subscriptionPlan, subscriptionExpires])
+  @@map("users")
+}
+
+enum SubscriptionPlan {
+  free
+  monthly
+  yearly
+}
+
+// Meeting Recording Sessions
+model RecordingSession {
+  id               String      @id @default(uuid()) @db.VarChar(36)
+  userId           String      @map("user_id") @db.VarChar(36)
+  title            String      @db.VarChar(200)
+  status           SessionStatus @default(recording)
+  audioFilePath    String?     @map("audio_file_path") @db.VarChar(500)
+  transcript       String?     @db.Text
+  userNotes        String?     @map("user_notes") @db.Text
+  aiSummary        String?     @map("ai_summary") @db.Text
+  durationSeconds  Int         @default(0) @map("duration_seconds")
+  languageCode     String      @default("ja") @map("language_code") @db.VarChar(10)
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime?   @updatedAt @map("updated_at")
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  aiOutputs AIOutput[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("recording_sessions")
+}
+
+enum SessionStatus {
+  recording
+  processing
+  completed
+  failed
+}
+
+// AI Generated Content
+model AIOutput {
+  id             String    @id @default(uuid()) @db.VarChar(36)
+  sessionId      String    @map("session_id") @db.VarChar(36)
+  type           AIType
+  content        String    @db.Text
+  confidenceScore Decimal?  @map("confidence_score") @db.Decimal(3, 2)
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  session RecordingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, type])
+  @@map("ai_outputs")
+}
+
+enum AIType {
+  summary
+  todos
+  key_points
+  decisions
+  open_issues // Added based on AISummaryResponse in types/index.ts
+}
+
+// User Settings and Preferences
+model UserPreferences {
+  userId        String         @id @map("user_id") @db.VarChar(36)
+  language      String         @default("ja") @db.VarChar(10)
+  timezone      String         @default("Asia/Tokyo") @db.VarChar(50)
+  audioQuality  AudioQuality   @default(standard) @map("audio_quality")
+  autoSave      Boolean        @default(true) @map("auto_save")
+  exportFormat  ExportFormat   @default(markdown) @map("export_format")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+enum AudioQuality {
+  standard
+  high
+}
+
+enum ExportFormat {
+  markdown
+  docx
+  pdf
+}

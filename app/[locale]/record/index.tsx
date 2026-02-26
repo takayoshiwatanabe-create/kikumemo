@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native"; // These are React Native components
 import { useI18n } from "@/i18n";
 
 export default function RecordScreen() {
@@ -19,7 +19,7 @@ export default function RecordScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ // StyleSheet is React Native specific
   container: {
     flex: 1,
     alignItems: "center",
@@ -37,3 +37,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+

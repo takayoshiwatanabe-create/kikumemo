@@ -1,15 +1,14 @@
-import * as Localization from "expo-localization";
 import { translations, type Language } from "./translations";
 import { useState, createContext, useContext, ReactNode } from "react";
-import { useRouter, useSegments } from "expo-router";
+import { useRouter, useSegments } from "next/navigation"; // Changed from "expo-router"
 
 const SUPPORTED_LANGUAGES: Language[] = ["ja", "en", "zh", "ko", "es", "fr", "de", "pt", "ar", "hi"];
 const DEFAULT_LANGUAGE: Language = "ja";
 
 function getDeviceLanguage(): Language {
   try {
-    const locales = Localization.getLocales();
-    const deviceLang = locales[0]?.languageCode ?? DEFAULT_LANGUAGE;
+    // For web, use navigator.language
+    const deviceLang = navigator.language.split('-')[0] ?? DEFAULT_LANGUAGE;
     if (SUPPORTED_LANGUAGES.includes(deviceLang as Language)) return deviceLang as Language;
     return DEFAULT_LANGUAGE;
   } catch {
@@ -29,7 +28,11 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 export function I18nProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const segments = useSegments();
-  const initialLang = (segments[0] as Language) || getDeviceLanguage();
+  
+  // Determine the initial language from the URL segment or device
+  const urlLocale = segments[0];
+  const initialLang = (urlLocale && SUPPORTED_LANGUAGES.includes(urlLocale as Language) ? urlLocale : getDeviceLanguage()) as Language;
+  
   const [currentLang, setCurrentLang] = useState<Language>(initialLang);
 
   const setLanguage = (newLang: Language) => {
@@ -38,10 +41,18 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       newLang = DEFAULT_LANGUAGE;
     }
     setCurrentLang(newLang);
+    
     // Update the URL to reflect the new locale
-    const currentPath = segments.join('/');
-    const newPath = currentPath.replace(initialLang, newLang);
-    router.replace(`/${newPath}`);
+    const currentPathSegments = [...segments];
+    if (currentPathSegments.length > 0 && SUPPORTED_LANGUAGES.includes(currentPathSegments[0] as Language)) {
+      currentPathSegments[0] = newLang;
+    } else {
+      // If for some reason the locale wasn't the first segment, prepend it
+      currentPathSegments.unshift(newLang);
+    }
+    const newPath = currentPathSegments.join('/');
+    // Ensure the path starts with a slash if it's not empty
+    router.replace(`/${newPath.startsWith('/') ? newPath.substring(1) : newPath}`);
   };
 
   const t = (key: string, vars?: Record<string, string | number>): string => {
@@ -74,6 +85,9 @@ export function useI18n() {
 
 // Re-export for direct use in non-component files if needed, but prefer useI18n
 export const lang = getDeviceLanguage();
+// The `isRTL` and `translate` exports here are based on the initial `lang` detection,
+// which might not reflect changes made via `setLanguage` in a component.
+// For dynamic language changes, `useI18n` should be preferred.
 export const isRTL = ["ar"].includes(lang);
 export const translate = (key: string, vars?: Record<string, string | number>): string => {
   const dict = translations[lang] ?? translations[DEFAULT_LANGUAGE];

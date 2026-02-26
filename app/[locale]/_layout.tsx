@@ -1,8 +1,8 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from "expo-router"; // This will cause an error in Next.js
+import { StatusBar } from "react-native"; // This will cause an error in Next.js
 import { useEffect } from "react";
 import { I18nProvider, useI18n } from "@/i18n";
-import { View } from "react-native";
+import { View } from "react-native"; // This will cause an error in Next.js
 
 export default function LocaleLayout() {
   return (
@@ -24,7 +24,8 @@ function LocaleAwareStack() {
   }, [isRTL]);
 
   return (
-    <View style={{ flex: 1, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+    // This View and Stack are React Native components and will not work in Next.js
+    <View style={{ flex: 1, flexDirection: isRTL ? 'row-reverse' : 'column' }}>
       <Stack>
         <Stack.Screen name="dashboard/index" options={{ title: "Dashboard" }} />
         <Stack.Screen name="record/index" options={{ title: "Record" }} />
@@ -36,3 +37,4 @@ function LocaleAwareStack() {
     </View>
   );
 }
+

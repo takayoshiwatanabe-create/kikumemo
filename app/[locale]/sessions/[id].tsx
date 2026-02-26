@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native"; // These are React Native components
+import { useLocalSearchParams } from "expo-router"; // This is Expo-specific
 import { useI18n } from "@/i18n";
 import { useState, useEffect } from "react";
 import { RecordingSession, AISummaryResponse } from "@/types";
@@ -41,7 +41,7 @@ const mockAISummary: AISummaryResponse = {
 };
 
 export default function SessionDetailScreen() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>(); // Specify type for useLocalSearchParams
   const { t } = useI18n();
   const [session, setSession] = useState<RecordingSession | null>(null);
   const [aiOutput, setAiOutput] = useState<AISummaryResponse | null>(null);
@@ -145,7 +145,7 @@ export default function SessionDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ // StyleSheet is React Native specific
   container: {
     flex: 1,
     backgroundColor: "#f8f8f8",
@@ -223,3 +223,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+
