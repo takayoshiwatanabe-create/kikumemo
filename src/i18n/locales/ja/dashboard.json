@@ -1,0 +1,15 @@
+{
+  "title": "ダッシュボード",
+  "welcomeMessage": "ようこそ、{{name}}さん！",
+  "recentSessions": "最近のセッション",
+  "noRecentSessions": "最近のセッションはありません。",
+  "startNewRecording": "新しい録音を開始",
+  "viewAllSessions": "すべてのセッションを見る",
+  "usageSummary": "利用状況サマリー",
+  "meetingsGenerated": "生成された会議",
+  "freeMeetingsLeft": "残りの無料会議",
+  "totalDuration": "合計録音時間",
+  "upgradePlan": "プランをアップグレード",
+  "minutes": "分"
+}
+

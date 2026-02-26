@@ -50,12 +50,12 @@ export default function SessionsScreen() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      <div className="mx-auto max-w-4xl">
+        <h1 className="mb-8 text-center text-4xl font-bold text-gray-900 dark:text-white">
           {t("sessions.title")}
         </h1>
         {sessions.length === 0 ? (
-          <p className="text-lg text-gray-700 dark:text-gray-300 text-center mt-12">
+          <p className="mt-12 text-center text-lg text-gray-700 dark:text-gray-300">
             {t("sessions.noSessions")}
           </p>
         ) : (
@@ -64,15 +64,15 @@ export default function SessionsScreen() {
               <button
                 key={item.id}
                 onClick={() => handleSessionClick(item.id)}
-                className="block w-full text-left bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-200 ease-in-out"
+                className="block w-full text-left rounded-lg bg-white p-5 shadow-md transition-shadow duration-200 ease-in-out hover:shadow-lg dark:bg-gray-800"
               >
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
+                <h2 className="mb-1 text-xl font-semibold text-gray-900 dark:text-white">
                   {item.title}
                 </h2>
                 <p className="text-md text-gray-600 dark:text-gray-400">
                   {t(`session.status.${item.status}`)}
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
                   {new Date(item.createdAt).toLocaleDateString(lang)}
                 </p>
               </button>

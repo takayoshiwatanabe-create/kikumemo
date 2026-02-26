@@ -2,6 +2,8 @@ import React from "react";
 import { I18nProvider } from "@/i18n";
 import { dir } from "i18next";
 import { Language } from "@/i18n/translations";
+import Header from "@/components/layout/header";
+import Sidebar from "@/components/layout/sidebar";
 
 // Define supported languages for the layout
 const SUPPORTED_LANGUAGES: Language[] = ["ja", "en", "zh", "ko", "es", "fr", "de", "pt", "ar", "hi"];
@@ -24,7 +26,16 @@ export default function LocaleLayout({
     <html lang={currentLocale} dir={dir(currentLocale)}>
       <body>
         <I18nProvider initialLocale={currentLocale}>
-          {children}
+          <div className="flex min-h-screen flex-col lg:flex-row">
+            {" "}
+            {/* Added lg:flex-row for sidebar layout */}
+            <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />{" "}
+            {/* Sidebar for large screens */}
+            <div className="flex flex-1 flex-col">
+              <Header /> {/* Add the Header component here */}
+              <main className="flex-1">{children}</main>
+            </div>
+          </div>
         </I18nProvider>
       </body>
     </html>

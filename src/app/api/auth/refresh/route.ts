@@ -3,6 +3,7 @@ import { encode, decode } from "next-auth/jwt";
 import { authOptions } from "../[...nextauth]/route";
 import { RefreshRequest } from "@/types";
 import { PrismaClient } from "@prisma/client"; // Import PrismaClient to fetch user data
+import { JWT } from "next-auth/jwt"; // Import JWT type
 
 const prisma = new PrismaClient();
 
@@ -11,24 +12,31 @@ export async function POST(req: Request) {
     const { refreshToken }: RefreshRequest = await req.json();
 
     if (!refreshToken) {
-      return NextResponse.json({ message: "Missing refresh token" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Missing refresh token" },
+        { status: 400 }
+      );
     }
 
     // Decode the refresh token to get user information
-    const decodedToken = await decode({
+    const decodedToken = (await decode({
       token: refreshToken,
       secret: process.env.NEXTAUTH_SECRET!,
-    });
+    })) as JWT | null; // Cast to JWT | null
 
     // The decoded token might be null or not have the expected properties.
     // Ensure `decodedToken` is not null and has the required properties before accessing them.
-    if (!decodedToken || typeof decodedToken.id !== 'string') { // Only ID is strictly needed to fetch user
-      return NextResponse.json({ message: "Invalid refresh token" }, { status: 401 });
+    // The `id` property is expected to be a string based on your JWT type definition.
+    if (!decodedToken || typeof decodedToken.id !== "string") {
+      return NextResponse.json(
+        { message: "Invalid refresh token" },
+        { status: 401 }
+      );
     }
 
     // In a real application, you would verify the refresh token against a database
     // to ensure it's still valid and hasn't been revoked.
-    // For this example, we'll assume the decoded token is sufficient.
+    // For simplicity, we'll assume the decoded token is sufficient.
 
     // Fetch the latest user data from the database to ensure the new access token is up-to-date
     const user = await prisma.user.findUnique({
@@ -64,10 +72,15 @@ export async function POST(req: Request) {
     // For simplicity, we're just returning a new access token here.
     // A more robust solution would involve refresh token rotation.
 
-    return NextResponse.json({ message: "Token refreshed successfully", accessToken: newAccessToken }, { status: 200 });
-
+    return NextResponse.json(
+      { message: "Token refreshed successfully", accessToken: newAccessToken },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Refresh token error:", error);
-    return NextResponse.json({ message: "Internal server error or invalid token" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal server error or invalid token" },
+      { status: 500 }
+    );
   }
 }

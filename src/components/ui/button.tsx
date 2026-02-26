@@ -38,28 +38,38 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    // When `asChild` is true, we render `React.Fragment` and expect `children` to be a single React element.
+    // When `asChild` is true, we expect `children` to be a single React element.
     // This element will then receive the merged class names and ref.
     // If `asChild` is false, we render a `button` element.
-    const Comp = asChild ? React.Fragment : "button";
+    const Comp = asChild ? React.Fragment : "button"; // Comp is not directly used for rendering the child
+
+    const content = props.children;
+
+    // If asChild is true, we need to clone the child and pass props.
+    // This requires `React.Children.only` to ensure there's only one child.
+    if (asChild) {
+      const child = React.Children.only(content);
+      if (!React.isValidElement(child)) {
+        throw new Error("Children must be a single valid React element when `asChild` is true.");
+      }
+      return React.cloneElement(child, {
+        className: cn(buttonVariants({ variant, size, className }), child.props.className),
+        ref,
+        ...props, // Pass other props like onClick, etc.
+      });
+    }
+
     return (
-      <Comp
-        className={asChild ? cn(buttonVariants({ variant, size, className })) : undefined} // Apply className to children if asChild, else to button
+      <button
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       >
-        {asChild ? React.Children.only(props.children) : props.children}
-      </Comp>
+        {content}
+      </button>
     );
   }
 );
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-
-// Helper utility for class merging (cn) - assuming it exists in '@/lib/utils'
-// If not, you'd need to create it, e.g.:
-// export function cn(...inputs: ClassValue[]) {
-//   return twMerge(clsx(inputs));
-// }
-// And install 'clsx' and 'tailwind-merge'

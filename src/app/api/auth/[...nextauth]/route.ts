@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Adapter } from "next-auth/adapters";
+import { User as NextAuthUser } from "next-auth"; // Import NextAuth's User type
 
 const prisma = new PrismaClient();
 
@@ -38,15 +39,14 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Return user object without sensitive data
+        // Return user object without sensitive data, cast to NextAuthUser
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           image: user.avatar_url, // Map avatar_url to image for NextAuth User type
-          // Include subscription_plan as per design spec if needed in session/JWT
           subscription_plan: user.subscription_plan,
-        };
+        } as NextAuthUser; // Explicitly cast to NextAuthUser
       },
     }),
   ],
@@ -57,13 +57,13 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       if (user) {
-        // Type assertion for user to match the extended User type
-        const extendedUser = user as { id: string; email: string; name: string; image?: string | null; subscription_plan?: string };
-        token.id = extendedUser.id;
-        token.email = extendedUser.email;
-        token.name = extendedUser.name;
-        token.picture = extendedUser.image; // Map user.image to token.picture
-        token.subscription_plan = extendedUser.subscription_plan; // Add subscription_plan to token
+        // The 'user' object here is the one returned by the 'authorize' function.
+        // It already has the extended properties due to the type declaration in auth.d.ts.
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image; // Map user.image to token.picture
+        token.subscription_plan = (user as any).subscription_plan; // Access subscription_plan
       }
       if (account) {
         token.accessToken = account.access_token;
@@ -81,7 +81,11 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.image = token.picture as string | null | undefined; // Ensure type matches
-        session.user.subscription_plan = token.subscription_plan as 'free' | 'monthly' | 'yearly' | undefined; // Add subscription_plan to session
+        session.user.subscription_plan = token.subscription_plan as
+          | "free"
+          | "monthly"
+          | "yearly"
+          | undefined; // Add subscription_plan to session
       }
       return session;
     },

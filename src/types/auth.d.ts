@@ -15,7 +15,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       image?: string | null; // avatar_url maps to image in NextAuth
-      subscription_plan?: 'free' | 'monthly' | 'yearly'; // Added subscription_plan
+      subscription_plan?: "free" | "monthly" | "yearly"; // Added subscription_plan
     } & DefaultSession["user"];
   }
 
@@ -28,7 +28,7 @@ declare module "next-auth" {
     email: string;
     name: string;
     avatar_url?: string | null; // Matches your database schema
-    subscription_plan?: 'free' | 'monthly' | 'yearly'; // Added subscription_plan
+    subscription_plan?: "free" | "monthly" | "yearly"; // Added subscription_plan
   }
 }
 
@@ -43,7 +43,7 @@ declare module "next-auth/jwt" {
     picture?: string | null; // Corresponds to avatar_url
     accessToken?: string;
     refreshToken?: string;
-    subscription_plan?: 'free' | 'monthly' | 'yearly'; // Added subscription_plan
+    subscription_plan?: "free" | "monthly" | "yearly"; // Added subscription_plan
   }
 }
 
