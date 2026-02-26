@@ -13,7 +13,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "record.instructions": "会議の録音を開始するには、下のボタンを押してください。",
     "record.startButton": "録音開始",
     "sessions.title": "セッション",
-    "sessions.noSessions": "まだセッションがありません。",
+    "sessions.noSessions": "最近のセッションはありません。",
     "sessions.description": "すべての録音された会議セッションとそのAI要約を表示します。",
     "sessions.session": "セッション",
     "session.notFound": "セッションが見つかりません。",
@@ -254,7 +254,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "language.ko": "Coréen",
     "language.es": "Espagnol",
     "language.fr": "Francés",
-    "language.de": "Allemand",
+    "language.de": "Allemán",
     "language.pt": "Portugués",
     "language.ar": "Arabe",
     "language.hi": "Hindi",
@@ -432,5 +432,3 @@ export const translations: Record<Language, Record<string, string>> = {
     "language.hi": "हिंदी",
   },
 };
-
-

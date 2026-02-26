@@ -1,18 +1,15 @@
-import React from "react";
-// No direct redirect here. The root layout should not perform redirects.
-// The redirection logic is handled in src/app/page.tsx.
-
-// This is the root layout for the entire application.
-// It wraps all other layouts and pages.
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // The `RootLayout` should provide a basic HTML structure that is then enhanced by `[locale]/_layout.tsx`.
-  // The `lang` attribute is set to a default here, but will be overridden by the `[locale]/_layout.tsx`
-  // which sets the correct language based on the URL segment.
-  return (
-    <html lang="en" suppressHydrationWarning> {/* Default to 'en' or a neutral language for the very root, overridden by [locale] */}
-      <body>
-        {children}
-      </body>
-    </html>
-  );
-}
+```diff
+--- a/src/app/_layout.tsx
++++ b/src/app/_layout.tsx
+@@ -7,7 +7,7 @@
+   // The `RootLayout` should provide a basic HTML structure that is then enhanced by `[locale]/_layout.tsx`.
+   // The `lang` attribute is set to a default here, but will be overridden by the `[locale]/_layout.tsx`
+   // which sets the correct language based on the URL segment.
+-  return (
+-    <html lang="en" suppressHydrationWarning> {/* Default to 'en' or a neutral language for the very root, overridden by [locale] */}
++  return ( 
++    <html lang="en" suppressHydrationWarning>
+       <body>
+         {children}
+       </body>
+```

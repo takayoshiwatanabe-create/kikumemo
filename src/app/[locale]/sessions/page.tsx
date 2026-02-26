@@ -1,7 +1,5 @@
 import SessionsScreen from "./index";
 import { Metadata } from "next";
-import { getDeviceLanguage } from "@/i18n";
-import { headers } from "next/headers";
 import { translations, Language } from "@/i18n/translations";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {

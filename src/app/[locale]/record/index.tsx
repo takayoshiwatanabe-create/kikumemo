@@ -29,5 +29,3 @@ export default function RecordScreen() {
     </div>
   );
 }
-
-

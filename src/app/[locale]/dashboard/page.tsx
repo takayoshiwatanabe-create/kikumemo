@@ -1,7 +1,5 @@
 import DashboardScreen from "./index";
 import { Metadata } from "next";
-import { getDeviceLanguage } from "@/i18n"; // Import getDeviceLanguage
-import { headers } from "next/headers"; // Import headers for server-side language detection
 import { translations } from "@/i18n/translations"; // Import translations to get localized metadata
 import { Language } from "@/i18n/translations"; // Import Language type
 

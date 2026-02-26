@@ -50,5 +50,3 @@ declare module "next-auth/jwt" {
 // Note: The `types/index.ts` file already defines `LoginRequest`, `RegisterRequest`, `RefreshRequest`.
 // This `auth.d.ts` file is specifically for extending NextAuth's internal types.
 // No need to duplicate `LoginRequest` etc. here.
-
-

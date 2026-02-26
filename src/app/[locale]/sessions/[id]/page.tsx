@@ -1,7 +1,5 @@
 import SessionDetailScreen from "../[id]";
 import { Metadata } from "next";
-import { getDeviceLanguage } from "@/i18n";
-import { headers } from "next/headers";
 import { translations, Language } from "@/i18n/translations";
 
 // Dynamic metadata for session detail page
