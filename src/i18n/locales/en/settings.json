@@ -1,0 +1,11 @@
+{
+  "title": "Settings",
+  "description": "Manage your user preferences.",
+  "language": "Language",
+  "timezone": "Timezone",
+  "audioQuality": "Audio Quality",
+  "audioQualityStandard": "Standard",
+  "audioQualityHigh": "High",
+  "autoSave": "Auto Save",
+  "exportFormat": "Export Format"
+}

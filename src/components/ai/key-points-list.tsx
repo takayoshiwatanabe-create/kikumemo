@@ -39,4 +39,3 @@ export default function KeyPointsList({ points }: KeyPointsListProps) {
     </motion.ul>
   );
 }
-

@@ -131,7 +131,7 @@ export default function RecordScreen() {
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
         <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
       </div>
     );
@@ -161,26 +161,26 @@ export default function RecordScreen() {
 
   return (
     <motion.div
-      className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900"
+      className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 dark:bg-gray-900"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.h1
-        className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
+        className="mb-4 text-4xl font-bold text-gray-900 dark:text-white"
         variants={itemVariants}
       >
         {t("record.title")}
       </motion.h1>
       <motion.p
-        className="text-lg text-gray-700 dark:text-gray-300 text-center mb-8"
+        className="mb-8 text-center text-lg text-gray-700 dark:text-gray-300"
         variants={itemVariants}
       >
         {t("record.instructions")}
       </motion.p>
 
-      <motion.div className="w-full max-w-md mb-8" variants={itemVariants}>
-        <Label htmlFor="session-title" className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2 block">
+      <motion.div className="mb-8 w-full max-w-md" variants={itemVariants}>
+        <Label htmlFor="session-title" className="mb-2 block text-lg font-medium text-gray-800 dark:text-gray-200">
           {t("record.sessionTitle")}
         </Label>
         <Input
@@ -190,7 +190,7 @@ export default function RecordScreen() {
           value={sessionTitle}
           onChange={(e) => setSessionTitle(e.target.value)}
           disabled={isRecording || isLoading}
-          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full rounded-md border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
         />
       </motion.div>
 
@@ -241,3 +241,4 @@ export default function RecordScreen() {
     </motion.div>
   );
 }
+

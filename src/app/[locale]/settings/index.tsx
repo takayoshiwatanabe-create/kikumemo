@@ -86,7 +86,7 @@ export default function SettingsScreen() {
   if (isLoading || status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
         <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
       </div>
     );
@@ -95,7 +95,7 @@ export default function SettingsScreen() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-red-500 text-center">{t("common.error")}: {error}</p>
+        <p className="text-center text-xl text-red-500">{t("common.error")}: {error}</p>
       </div>
     );
   }
@@ -124,21 +124,21 @@ export default function SettingsScreen() {
 
   return (
     <motion.div
-      className={`min-h-screen bg-gray-100 dark:bg-gray-900 p-6 ${isRTL ? "rtl" : "ltr"}`}
+      className={`min-h-screen bg-gray-100 p-6 dark:bg-gray-900 ${isRTL ? "rtl" : "ltr"}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="max-w-2xl mx-auto">
+      <div className="mx-auto max-w-2xl">
         <motion.h1
-          className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center"
+          className="mb-8 text-center text-4xl font-bold text-gray-900 dark:text-white"
           variants={itemVariants}
         >
           {t("settings.title")}
         </motion.h1>
 
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          className="mb-4 flex items-center justify-between rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
           variants={itemVariants}
         >
           <label htmlFor="language-select" className="text-lg text-gray-800 dark:text-gray-200">
@@ -148,7 +148,7 @@ export default function SettingsScreen() {
             id="language-select"
             value={localPreferences.language}
             onChange={handleLanguageChange}
-            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           >
             <option value="ja">{t("language.ja")}</option>
             <option value="en">{t("language.en")}</option>
@@ -164,7 +164,7 @@ export default function SettingsScreen() {
         </motion.div>
 
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          className="mb-4 flex items-center justify-between rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
           variants={itemVariants}
         >
           <label htmlFor="timezone-select" className="text-lg text-gray-800 dark:text-gray-200">
@@ -174,7 +174,7 @@ export default function SettingsScreen() {
             id="timezone-select"
             value={localPreferences.timezone}
             onChange={handleTimezoneChange}
-            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           >
             <option value="Asia/Tokyo">Asia/Tokyo</option>
             <option value="America/New_York">America/New_York</option>
@@ -184,7 +184,7 @@ export default function SettingsScreen() {
         </motion.div>
 
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          className="mb-4 flex items-center justify-between rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
           variants={itemVariants}
         >
           <label htmlFor="audio-quality-select" className="text-lg text-gray-800 dark:text-gray-200">
@@ -194,7 +194,7 @@ export default function SettingsScreen() {
             id="audio-quality-select"
             value={localPreferences.audioQuality}
             onChange={handleAudioQualityChange}
-            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           >
             <option value="standard">{t("settings.audioQualityStandard")}</option>
             <option value="high">{t("settings.audioQualityHigh")}</option>
@@ -202,7 +202,7 @@ export default function SettingsScreen() {
         </motion.div>
 
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          className="mb-4 flex items-center justify-between rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
           variants={itemVariants}
         >
           <label htmlFor="export-format-select" className="text-lg text-gray-800 dark:text-gray-200">
@@ -212,7 +212,7 @@ export default function SettingsScreen() {
             id="export-format-select"
             value={localPreferences.exportFormat}
             onChange={handleExportFormatChange}
-            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           >
             <option value="markdown">Markdown</option>
             <option value="docx">DOCX</option>
@@ -221,21 +221,21 @@ export default function SettingsScreen() {
         </motion.div>
 
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          className="mb-4 flex items-center justify-between rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
           variants={itemVariants}
         >
           <label htmlFor="auto-save-switch" className="text-lg text-gray-800 dark:text-gray-200">
             {t("settings.autoSave")}
           </label>
-          <label className="relative inline-flex items-center cursor-pointer">
+          <label className="relative inline-flex cursor-pointer items-center">
             <input
               type="checkbox"
               id="auto-save-switch"
               checked={localPreferences.autoSave}
               onChange={handleToggleAutoSave}
-              className="sr-only peer"
+              className="peer sr-only"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
           </label>
         </motion.div>
 
@@ -243,3 +243,4 @@ export default function SettingsScreen() {
     </motion.div>
   );
 }
+

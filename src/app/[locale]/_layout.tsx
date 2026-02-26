@@ -27,10 +27,10 @@ export default function LocaleLayout({
 
       {/* Mobile Sidebar (overlay) */}
       {/* The mobile sidebar should be conditionally rendered and controlled by `sidebarOpen` */}
-      {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={() => toggleSidebar()} />}
+      {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />}
 
       <div className="flex flex-1 flex-col">
-        <Header /> {/* Removed onMenuPress as it's handled by useUIStore */}
+        <Header onMenuPress={toggleSidebar} /> {/* Added onMenuPress to Header */}
         <main className="flex-1">{children}</main>
       </div>
     </div>

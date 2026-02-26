@@ -94,7 +94,7 @@ export default function SessionDetailScreen() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
           <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
         </div>
       </div>
@@ -104,7 +104,7 @@ export default function SessionDetailScreen() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-red-500 text-center">{error}</p>
+        <p className="text-center text-xl text-red-500">{error}</p>
       </div>
     );
   }
@@ -112,7 +112,7 @@ export default function SessionDetailScreen() {
   if (!sessionData) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-red-500 text-center">{t("session.notFound")}</p>
+        <p className="text-center text-xl text-red-500">{t("session.notFound")}</p>
       </div>
     );
   }
@@ -141,20 +141,20 @@ export default function SessionDetailScreen() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6"
+      className="min-h-screen bg-gray-100 p-6 dark:bg-gray-900"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="max-w-4xl mx-auto pb-12">
+      <div className="mx-auto max-w-4xl pb-12">
         <motion.h1
-          className="text-4xl font-bold text-gray-900 dark:text-white mb-2"
+          className="mb-2 text-4xl font-bold text-gray-900 dark:text-white"
           variants={itemVariants}
         >
           {sessionData.title}
         </motion.h1>
         <motion.p
-          className="text-lg text-gray-600 dark:text-gray-400 mb-6"
+          className="mb-6 text-lg text-gray-600 dark:text-gray-400"
           variants={itemVariants}
         >
           {t(`session.status.${sessionData.status}` as keyof typeof translations.en.session.status)}
@@ -162,21 +162,21 @@ export default function SessionDetailScreen() {
 
         {sessionData.transcript && (
           <motion.div
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6"
+            className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
             variants={itemVariants}
           >
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t("session.transcript")}</h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{sessionData.transcript}</p>
+            <h2 className="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{t("session.transcript")}</h2>
+            <p className="leading-relaxed text-gray-800 dark:text-gray-200">{sessionData.transcript}</p>
           </motion.div>
         )}
 
         {sessionData.user_notes && (
           <motion.div
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6"
+            className="mb-6 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800"
             variants={itemVariants}
           >
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t("session.userNotes")}</h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{sessionData.user_notes}</p>
+            <h2 className="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{t("session.userNotes")}</h2>
+            <p className="leading-relaxed text-gray-800 dark:text-gray-200">{sessionData.user_notes}</p>
           </motion.div>
         )}
 
@@ -187,3 +187,4 @@ export default function SessionDetailScreen() {
     </motion.div>
   );
 }
+

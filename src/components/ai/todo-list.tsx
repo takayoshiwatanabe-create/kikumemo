@@ -2,12 +2,12 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { TodoItem } from "@/types";
+import { AITodoItem } from "@/types"; // Changed from TodoItem to AITodoItem
 import { useI18n, Language } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 interface TodoListProps {
-  todos: TodoItem[];
+  todos: AITodoItem[]; // Changed from TodoItem[] to AITodoItem[]
   lang: Language;
 }
 
@@ -73,5 +73,3 @@ export default function TodoList({ todos, lang }: TodoListProps) {
     </motion.ul>
   );
 }
-
-

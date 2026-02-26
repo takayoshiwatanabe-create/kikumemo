@@ -39,4 +39,3 @@ export default function OpenIssuesList({ issues }: OpenIssuesListProps) {
     </motion.ul>
   );
 }
-

@@ -16,7 +16,7 @@ export default function DashboardScreen() {
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
         <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
       </div>
     );
@@ -54,13 +54,13 @@ export default function DashboardScreen() {
 
   return (
     <motion.div
-      className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900"
+      className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 dark:bg-gray-900"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.h1
-        className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
+        className="mb-4 text-4xl font-bold text-gray-900 dark:text-white"
         variants={itemVariants}
       >
         {t("dashboard.title")}
@@ -74,14 +74,14 @@ export default function DashboardScreen() {
       <motion.div className="mt-8 flex space-x-4" variants={itemVariants}>
         <Button
           onClick={() => router.push(`/${lang}/record`)}
-          className="px-6 py-3 text-lg font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-all duration-300 ease-in-out"
+          className="rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 ease-in-out hover:bg-blue-700"
         >
           {t("dashboard.startNewRecording")}
         </Button>
         <Button
           onClick={() => router.push(`/${lang}/sessions`)}
           variant="outline"
-          className="px-6 py-3 text-lg font-semibold rounded-lg border-blue-600 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-gray-700 shadow-lg transition-all duration-300 ease-in-out"
+          className="rounded-lg border-blue-600 px-6 py-3 text-lg font-semibold text-blue-600 shadow-lg transition-all duration-300 ease-in-out hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-gray-700"
         >
           {t("dashboard.viewAllSessions")}
         </Button>
@@ -89,3 +89,4 @@ export default function DashboardScreen() {
     </motion.div>
   );
 }
+

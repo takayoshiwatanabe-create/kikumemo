@@ -54,7 +54,7 @@ export default function SessionsScreen() {
   if (loading || status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
         <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">{t("common.loading")}</p>
       </div>
     );
@@ -63,7 +63,7 @@ export default function SessionsScreen() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-red-500 text-center">{error}</p>
+        <p className="text-center text-xl text-red-500">{error}</p>
       </div>
     );
   }
@@ -92,21 +92,21 @@ export default function SessionsScreen() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6"
+      className="min-h-screen bg-gray-100 p-6 dark:bg-gray-900"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         <motion.h1
-          className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center"
+          className="mb-8 text-center text-4xl font-bold text-gray-900 dark:text-white"
           variants={itemVariants}
         >
           {t("sessions.title")}
         </motion.h1>
         {sessions.length === 0 ? (
           <motion.p
-            className="text-lg text-gray-700 dark:text-gray-300 text-center mt-12"
+            className="mt-12 text-center text-lg text-gray-700 dark:text-gray-300"
             variants={itemVariants}
           >
             {t("sessions.noSessions")}
@@ -117,16 +117,16 @@ export default function SessionsScreen() {
               <motion.button
                 key={item.id}
                 onClick={() => handleSessionClick(item.id)}
-                className="block w-full text-left bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-200 ease-in-out"
+                className="block w-full rounded-lg bg-white p-5 text-left shadow-md transition-shadow duration-200 ease-in-out hover:shadow-lg dark:bg-gray-800"
                 variants={itemVariants}
               >
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
+                <h2 className="mb-1 text-xl font-semibold text-gray-900 dark:text-white">
                   {item.title}
                 </h2>
                 <p className="text-md text-gray-600 dark:text-gray-400">
                   {t(`session.status.${item.status}` as keyof typeof translations.en.session.status)}
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
                   {new Date(item.created_at).toLocaleDateString(lang)}
                 </p>
               </motion.button>
@@ -137,3 +137,4 @@ export default function SessionsScreen() {
     </motion.div>
   );
 }
+

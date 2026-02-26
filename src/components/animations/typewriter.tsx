@@ -39,4 +39,3 @@ export default function Typewriter({ text, delay = 0.5, stagger = 0.03, classNam
     </motion.span>
   );
 }
-

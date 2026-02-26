@@ -1,0 +1,11 @@
+{
+  "title": "設定",
+  "description": "ユーザー設定を管理します。",
+  "language": "言語",
+  "timezone": "タイムゾーン",
+  "audioQuality": "オーディオ品質",
+  "audioQualityStandard": "標準",
+  "audioQualityHigh": "高",
+  "autoSave": "自動保存",
+  "exportFormat": "エクスポート形式"
+}
