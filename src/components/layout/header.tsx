@@ -47,7 +47,7 @@ export function Header({ onMenuPress }: HeaderProps) {
         {status === "authenticated" ? (
           <>
             <span className="text-gray-700 dark:text-gray-300 hidden md:block">
-              {t("header.welcome", { name: session.user?.name || "" })}
+              {t("header.welcome", { name: session?.user?.name || "" })}
             </span>
             <Button onClick={handleSignOut} variant="outline" className="text-sm">
               {t("header.signOut")}
@@ -64,3 +64,4 @@ export function Header({ onMenuPress }: HeaderProps) {
     </header>
   );
 }
+

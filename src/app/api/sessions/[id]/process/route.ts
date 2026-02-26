@@ -177,6 +177,15 @@ export async function POST(
         content: JSON.stringify(aiOutput.decisions), // Store as JSON string
       });
     }
+    // Add open_issues to ai_outputs table
+    if (aiOutput.openIssues && aiOutput.openIssues.length > 0) {
+      aiOutputsToCreate.push({
+        id: crypto.randomUUID(),
+        session_id: sessionId,
+        type: "open_issues",
+        content: JSON.stringify(aiOutput.openIssues), // Store as JSON string
+      });
+    }
 
     if (aiOutputsToCreate.length > 0) {
       await prisma.ai_outputs.createMany({

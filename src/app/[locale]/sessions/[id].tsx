@@ -7,6 +7,11 @@ import { RecordingSession, AISummaryResponse } from "@/types";
 import { useSession } from "next-auth/react"; // Import useSession
 import { useRouter } from "next/navigation"; // Import useRouter
 import { Language } from "@/i18n"; // Import Language from i18n/index.ts
+import { translations } from "@/i18n/translations"; // Import translations for type assertion
+import KeyPointsList from "@/components/ai/key-points-list"; // Import KeyPointsList
+import TodoList from "@/components/ai/todo-list"; // Import TodoList
+import DecisionsList from "@/components/ai/decisions-list"; // Import DecisionsList
+import OpenIssuesList from "@/components/ai/open-issues-list"; // Import OpenIssuesList
 
 const mockSessionDetail: RecordingSession = {
   id: "1",
@@ -128,46 +133,28 @@ export default function SessionDetailScreen() {
             {aiOutput.keyPoints && aiOutput.keyPoints.length > 0 && (
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.keyPoints")}</h3>
-                <ul className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1">
-                  {aiOutput.keyPoints.map((point, index) => (
-                    <li key={index}>{point}</li>
-                  ))}
-                </ul>
+                <KeyPointsList points={aiOutput.keyPoints} />
               </div>
             )}
 
             {aiOutput.todos && aiOutput.todos.length > 0 && (
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.todos")}</h3>
-                <ul className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1">
-                  {aiOutput.todos.map((todo, index) => (
-                    <li key={index}>
-                      {todo.task} ({t("common.assignee")}: {todo.assignee}{todo.deadline ? `, ${t("common.deadline")}: ${new Date(todo.deadline).toLocaleDateString(lang)}` : ''})
-                    </li>
-                  ))}
-                </ul>
+                <TodoList todos={aiOutput.todos} lang={lang as Language} />
               </div>
             )}
 
             {aiOutput.decisions && aiOutput.decisions.length > 0 && (
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.decisions")}</h3>
-                <ul className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1">
-                  {aiOutput.decisions.map((decision, index) => (
-                    <li key={index}>{decision}</li>
-                  ))}
-                </ul>
+                <DecisionsList decisions={aiOutput.decisions} />
               </div>
             )}
 
             {aiOutput.openIssues && aiOutput.openIssues.length > 0 && (
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{t("session.openIssues")}</h3>
-                <ul className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1">
-                  {aiOutput.openIssues.map((issue, index) => (
-                    <li key={index}>{issue}</li>
-                  ))}
-                </ul>
+                <OpenIssuesList issues={aiOutput.openIssues} />
               </div>
             )}
           </div>

@@ -1,0 +1,42 @@
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+
+interface KeyPointsListProps {
+  points: string[];
+}
+
+// Reusing TypewriterVariants from CLAUDE.md for a staggered appearance
+const TypewriterVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05, // Stagger each list item
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0 },
+};
+
+export default function KeyPointsList({ points }: KeyPointsListProps) {
+  return (
+    <motion.ul
+      className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1"
+      variants={TypewriterVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {points.map((point, index) => (
+        <motion.li key={index} variants={listItemVariants}>
+          {point}
+        </motion.li>
+      ))}
+    </motion.ul>
+  );
+}

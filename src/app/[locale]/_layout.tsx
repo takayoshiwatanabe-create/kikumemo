@@ -25,6 +25,11 @@ export default function LocaleLayout({
   return (
     <div className={cn("flex min-h-screen flex-col lg:flex-row", isRTL ? "rtl" : "ltr")}>
       {/* Sidebar for large screens, always static here */}
+      {/* The CLAUDE.md spec does not explicitly define a static vs mobile sidebar,
+          but the current implementation implies a responsive design.
+          The `Sidebar` component itself should handle its responsiveness.
+          For now, keeping the current structure but noting it could be simplified
+          if the Sidebar component is fully responsive internally. */}
       <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />
 
       {/* Mobile Sidebar (overlay) */}
