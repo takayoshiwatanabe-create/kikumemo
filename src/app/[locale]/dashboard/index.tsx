@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
+import { motion } from "framer-motion";
 
 export default function DashboardScreen() {
   const { t, lang } = useI18n();
@@ -28,15 +29,48 @@ export default function DashboardScreen() {
 
   const userName = (session as Session)?.user?.name || "User";
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        ease: "easeOut",
+        duration: 0.4,
+      },
+    },
+  };
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+    <motion.div
+      className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1
+        className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
+        variants={itemVariants}
+      >
         {t("dashboard.title")}
-      </h1>
-      <p className="text-lg text-gray-700 dark:text-gray-300">
+      </motion.h1>
+      <motion.p
+        className="text-lg text-gray-700 dark:text-gray-300"
+        variants={itemVariants}
+      >
         {t("dashboard.welcomeMessage", { name: userName })}
-      </p>
-      <div className="mt-8 flex space-x-4">
+      </motion.p>
+      <motion.div className="mt-8 flex space-x-4" variants={itemVariants}>
         <Button
           onClick={() => router.push(`/${lang}/record`)}
           className="px-6 py-3 text-lg font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-all duration-300 ease-in-out"
@@ -50,8 +84,7 @@ export default function DashboardScreen() {
         >
           {t("dashboard.viewAllSessions")}
         </Button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
-

@@ -13,6 +13,7 @@ import { Language } from "@/i18n";
 import RealtimeTranscript from "@/components/ai/realtime-transcript";
 import { AudioVisualizerMessage } from "@/types";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
+import { motion } from "framer-motion";
 
 export default function RecordScreen() {
   const { t, lang } = useI18n();
@@ -45,7 +46,7 @@ export default function RecordScreen() {
         // This is a placeholder for actual real-time transcription.
         // In a real scenario, `data` would be sent to a WebSocket for transcription.
         // For now, we simulate some activity and update visualizer.
-        setTranscript(prev => prev + " " + t("record.listeningChunk"));
+        // setTranscript(prev => prev + " " + t("record.listeningChunk")); // Removed for cleaner simulation
 
         const volume = Math.random(); // Simulate volume
         const frequencies = Array.from({ length: 50 }, () => Math.random()); // Simulate frequencies
@@ -134,16 +135,49 @@ export default function RecordScreen() {
     );
   }
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-        {t("record.title")}
-      </h1>
-      <p className="text-lg text-gray-700 dark:text-gray-300 text-center mb-8">
-        {t("record.instructions")}
-      </p>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
-      <div className="w-full max-w-md mb-8">
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        ease: "easeOut",
+        duration: 0.4,
+      },
+    },
+  };
+
+  return (
+    <motion.div
+      className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1
+        className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
+        variants={itemVariants}
+      >
+        {t("record.title")}
+      </motion.h1>
+      <motion.p
+        className="text-lg text-gray-700 dark:text-gray-300 text-center mb-8"
+        variants={itemVariants}
+      >
+        {t("record.instructions")}
+      </motion.p>
+
+      <motion.div className="w-full max-w-md mb-8" variants={itemVariants}>
         <Label htmlFor="session-title" className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2 block">
           {t("record.sessionTitle")}
         </Label>
@@ -156,17 +190,21 @@ export default function RecordScreen() {
           disabled={isRecording || isLoading}
           className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
         />
-      </div>
+      </motion.div>
 
-      <AudioVisualizer audioData={audioVisualizerData} isRecording={isRecording && !isPaused} />
+      <motion.div variants={itemVariants}>
+        <AudioVisualizer audioData={audioVisualizerData} isRecording={isRecording && !isPaused} />
+      </motion.div>
 
-      <RealtimeTranscript
-        transcript={transcript}
-        isRecording={isRecording && !isPaused}
-        isProcessing={isLoading && !isRecording}
-      />
+      <motion.div variants={itemVariants}>
+        <RealtimeTranscript
+          transcript={transcript}
+          isRecording={isRecording && !isPaused}
+          isProcessing={isLoading && !isRecording}
+        />
+      </motion.div>
 
-      <div className="mt-8">
+      <motion.div className="mt-8" variants={itemVariants}>
         <RecordingControls
           isRecording={isRecording}
           onStartRecording={handleStartRecording}
@@ -176,19 +214,28 @@ export default function RecordScreen() {
           isPaused={isPaused}
           disabled={isLoading || !sessionTitle.trim()}
         />
-      </div>
+      </motion.div>
 
       {isLoading && (
-        <p className="mt-4 text-lg text-blue-600 dark:text-blue-400">
+        <motion.p
+          className="mt-4 text-lg text-blue-600 dark:text-blue-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {t("common.loading")}...
-        </p>
+        </motion.p>
       )}
       {error && (
-        <p className="mt-4 text-lg text-red-600 dark:text-red-400">
+        <motion.p
+          className="mt-4 text-lg text-red-600 dark:text-red-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {t("common.error")}: {error}
-        </p>
+        </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 }
-

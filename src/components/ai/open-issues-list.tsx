@@ -40,3 +40,4 @@ export default function OpenIssuesList({ issues }: OpenIssuesListProps) {
   );
 }
 
+

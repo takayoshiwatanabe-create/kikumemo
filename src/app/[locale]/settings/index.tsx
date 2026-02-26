@@ -6,20 +6,22 @@ import { UserPreferences } from "@/types";
 import { Language } from "@/i18n";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { useUserStore } from "@/stores/user-store";
 
 export default function SettingsScreen() {
   const { t, lang, setLanguage, isRTL } = useI18n();
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { userPreferences, fetchUserPreferences, updateUserPreferences, isLoading, error } = useUserStore();
 
-  const [preferences, setPreferences] = useState<UserPreferences>({
+  const [localPreferences, setLocalPreferences] = useState<UserPreferences>({
     language: lang,
     timezone: "Asia/Tokyo",
     audioQuality: "standard",
     autoSave: true,
     exportFormat: "markdown",
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -27,34 +29,54 @@ export default function SettingsScreen() {
       return;
     }
 
-    const fetchPreferences = async () => {
-      setLoading(true);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setPreferences(prev => ({ ...prev, language: lang }));
-      setLoading(false);
-    };
-
-    if (status === "authenticated") {
-      fetchPreferences();
+    if (status === "authenticated" && !userPreferences && !isLoading) {
+      fetchUserPreferences();
     }
-  }, [status, lang, router]);
+  }, [status, lang, router, fetchUserPreferences, userPreferences, isLoading]);
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  useEffect(() => {
+    if (userPreferences) {
+      setLocalPreferences(userPreferences);
+      // Ensure the i18n language matches the fetched preference
+      if (userPreferences.language !== lang) {
+        setLanguage(userPreferences.language as Language);
+      }
+    }
+  }, [userPreferences, lang, setLanguage]);
+
+  const handleLanguageChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
-    setPreferences((prev) => ({ ...prev, language: newLang }));
-    setLanguage(newLang);
-    console.log("Language changed to:", newLang);
-    router.push(`/${newLang}/settings`);
+    setLocalPreferences((prev) => ({ ...prev, language: newLang }));
+    setLanguage(newLang); // Update i18n context immediately
+    await updateUserPreferences({ language: newLang });
+    router.push(`/${newLang}/settings`); // Redirect to update locale in URL
   };
 
-  const handleToggleAutoSave = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTimezoneChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newTimezone = e.target.value;
+    setLocalPreferences((prev) => ({ ...prev, timezone: newTimezone }));
+    await updateUserPreferences({ timezone: newTimezone });
+  };
+
+  const handleAudioQualityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newQuality = e.target.value as 'standard' | 'high';
+    setLocalPreferences((prev) => ({ ...prev, audioQuality: newQuality }));
+    await updateUserPreferences({ audioQuality: newQuality });
+  };
+
+  const handleToggleAutoSave = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
-    setPreferences((prev) => ({ ...prev, autoSave: value }));
-    console.log("Auto save toggled:", value);
+    setLocalPreferences((prev) => ({ ...prev, autoSave: value }));
+    await updateUserPreferences({ autoSave: value });
   };
 
-  if (loading || status === "loading") {
+  const handleExportFormatChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newFormat = e.target.value as 'markdown' | 'docx' | 'pdf';
+    setLocalPreferences((prev) => ({ ...prev, exportFormat: newFormat }));
+    await updateUserPreferences({ exportFormat: newFormat });
+  };
+
+  if (isLoading || status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -63,20 +85,61 @@ export default function SettingsScreen() {
     );
   }
 
-  return (
-    <div className={`min-h-screen bg-gray-100 dark:bg-gray-900 p-6 ${isRTL ? "rtl" : "ltr"}`}>
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-          {t("settings.title")}
-        </h1>
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <p className="text-xl text-red-500 text-center">{t("common.error")}: {error}</p>
+      </div>
+    );
+  }
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center">
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        ease: "easeOut",
+        duration: 0.4,
+      },
+    },
+  };
+
+  return (
+    <motion.div
+      className={`min-h-screen bg-gray-100 dark:bg-gray-900 p-6 ${isRTL ? "rtl" : "ltr"}`}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <div className="max-w-2xl mx-auto">
+        <motion.h1
+          className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center"
+          variants={itemVariants}
+        >
+          {t("settings.title")}
+        </motion.h1>
+
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          variants={itemVariants}
+        >
           <label htmlFor="language-select" className="text-lg text-gray-800 dark:text-gray-200">
             {t("settings.language")}
           </label>
           <select
             id="language-select"
-            value={preferences.language}
+            value={localPreferences.language}
             onChange={handleLanguageChange}
             className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
           >
@@ -91,9 +154,69 @@ export default function SettingsScreen() {
             <option value="ar">{t("language.ar")}</option>
             <option value="hi">{t("language.hi")}</option>
           </select>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center">
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          variants={itemVariants}
+        >
+          <label htmlFor="timezone-select" className="text-lg text-gray-800 dark:text-gray-200">
+            {t("settings.timezone")}
+          </label>
+          <select
+            id="timezone-select"
+            value={localPreferences.timezone}
+            onChange={handleTimezoneChange}
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="Asia/Tokyo">Asia/Tokyo</option>
+            <option value="America/New_York">America/New_York</option>
+            <option value="Europe/London">Europe/London</option>
+            {/* Add more timezones as needed */}
+          </select>
+        </motion.div>
+
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          variants={itemVariants}
+        >
+          <label htmlFor="audio-quality-select" className="text-lg text-gray-800 dark:text-gray-200">
+            {t("settings.audioQuality")}
+          </label>
+          <select
+            id="audio-quality-select"
+            value={localPreferences.audioQuality}
+            onChange={handleAudioQualityChange}
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="standard">{t("settings.audioQualityStandard")}</option>
+            <option value="high">{t("settings.audioQualityHigh")}</option>
+          </select>
+        </motion.div>
+
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          variants={itemVariants}
+        >
+          <label htmlFor="export-format-select" className="text-lg text-gray-800 dark:text-gray-200">
+            {t("settings.exportFormat")}
+          </label>
+          <select
+            id="export-format-select"
+            value={localPreferences.exportFormat}
+            onChange={handleExportFormatChange}
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="markdown">Markdown</option>
+            <option value="docx">DOCX</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </motion.div>
+
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4 flex justify-between items-center"
+          variants={itemVariants}
+        >
           <label htmlFor="auto-save-switch" className="text-lg text-gray-800 dark:text-gray-200">
             {t("settings.autoSave")}
           </label>
@@ -101,16 +224,15 @@ export default function SettingsScreen() {
             <input
               type="checkbox"
               id="auto-save-switch"
-              checked={preferences.autoSave}
+              checked={localPreferences.autoSave}
               onChange={handleToggleAutoSave}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
-        </div>
+        </motion.div>
 
       </div>
-    </div>
+    </motion.div>
   );
 }
-

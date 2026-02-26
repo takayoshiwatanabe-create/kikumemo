@@ -3,11 +3,11 @@
 import React from "react";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { MenuIcon } from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { MenuIcon, SettingsIcon, ListTodoIcon, MicIcon, LayoutDashboardIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { useUIStore } from "@/stores/ui-store"; // Import useUIStore
 
 interface HeaderProps {
   onMenuPress: () => void;
@@ -15,53 +15,56 @@ interface HeaderProps {
 
 export function Header({ onMenuPress }: HeaderProps) {
   const { t, lang } = useI18n();
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const pathname = usePathname();
+  const { toggleSidebar } = useUIStore(); // Use toggleSidebar from store
 
-  const handleSignOut = async () => {
-    await signOut({ redirect: false });
-    router.push(`/${lang}/auth/login`);
-  };
+  const navItems = [
+    { href: `/${lang}/dashboard`, icon: LayoutDashboardIcon, label: t("header.dashboard") },
+    { href: `/${lang}/record`, icon: MicIcon, label: t("header.record") },
+    { href: `/${lang}/sessions`, icon: ListTodoIcon, label: t("header.sessions") },
+    { href: `/${lang}/settings`, icon: SettingsIcon, label: t("header.settings") },
+  ];
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-white px-4 dark:bg-gray-800 dark:border-gray-700 shadow-sm",
-      )}
-    >
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden"
-        onClick={onMenuPress}
-        aria-label={t("common.toggleSidebar")}
-      >
-        <MenuIcon className="h-6 w-6 text-gray-700 dark:text-gray-300" />
-      </Button>
-      <Link href={`/${lang}/dashboard`} passHref legacyBehavior>
-        <a className="text-xl font-semibold text-gray-900 dark:text-white cursor-pointer">
-          {t("header.appName")}
-        </a>
-      </Link>
-      <div className="flex items-center space-x-4">
-        {status === "authenticated" ? (
-          <>
-            <span className="text-gray-700 dark:text-gray-300 hidden md:block">
-              {t("header.welcome", { name: session?.user?.name || "" })}
+    <header className="sticky top-0 z-40 w-full border-b bg-white dark:bg-gray-950 dark:border-gray-800">
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden mr-4"
+            onClick={toggleSidebar} // Use toggleSidebar
+            aria-label={t("header.toggleSidebar")}
+          >
+            <MenuIcon className="h-6 w-6" />
+          </Button>
+          <Link href={`/${lang}/dashboard`} className="flex items-center space-x-2">
+            <span className="font-bold text-xl text-gray-900 dark:text-white">
+              {t("header.appName")}
             </span>
-            <Button onClick={handleSignOut} variant="outline" className="text-sm">
-              {t("header.signOut")}
-            </Button>
-          </>
-        ) : (
-          <Link href={`/${lang}/auth/login`} passHref legacyBehavior>
-            <Button variant="default" className="text-sm">
-              {t("header.signIn")}
-            </Button>
           </Link>
-        )}
+        </div>
+        <nav className="hidden lg:flex items-center space-x-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800",
+                pathname.startsWith(item.href)
+                  ? "bg-gray-100 dark:bg-gray-800 text-blue-600 dark:text-blue-400"
+                  : "text-gray-600 dark:text-gray-300"
+              )}
+            >
+              <item.icon className="mr-2 h-5 w-5" />
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex items-center space-x-4">
+          {/* User profile/auth buttons can go here */}
+        </div>
       </div>
     </header>
   );
 }
-

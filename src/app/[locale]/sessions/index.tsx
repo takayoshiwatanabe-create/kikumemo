@@ -6,40 +6,7 @@ import { useRouter } from "next/navigation";
 import { RecordingSession } from "@/types";
 import { useSession } from "next-auth/react";
 import { translations } from "@/i18n/translations";
-import { Language } from "@/i18n";
-
-const mockSessions: RecordingSession[] = [
-  {
-    id: "1",
-    userId: "user1",
-    title: "Project Kick-off Meeting",
-    status: "completed",
-    duration_seconds: 3600,
-    language_code: "en",
-    createdAt: new Date("2023-10-26T10:00:00Z"),
-    updatedAt: new Date("2023-10-26T11:00:00Z"),
-  },
-  {
-    id: "2",
-    userId: "user1",
-    title: "Weekly Sync",
-    status: "processing",
-    duration_seconds: 1800,
-    language_code: "ja",
-    createdAt: new Date("2023-10-25T14:30:00Z"),
-    updatedAt: new Date("2023-10-25T14:45:00Z"),
-  },
-  {
-    id: "3",
-    userId: "user1",
-    title: "Client Demo Feedback",
-    status: "failed",
-    duration_seconds: 1200,
-    language_code: "es",
-    createdAt: new Date("2023-10-24T09:00:00Z"),
-    updatedAt: new Date("2023-10-24T09:10:00Z"),
-  },
-];
+import { motion } from "framer-motion";
 
 export default function SessionsScreen() {
   const { t, lang } = useI18n();
@@ -47,6 +14,7 @@ export default function SessionsScreen() {
   const { data: session, status } = useSession();
   const [sessions, setSessions] = useState<RecordingSession[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -56,16 +24,28 @@ export default function SessionsScreen() {
 
     const fetchSessions = async () => {
       setLoading(true);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setSessions(mockSessions);
-      setLoading(false);
+      setError(null);
+      try {
+        const response = await fetch('/api/sessions');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch sessions");
+        }
+        const data: RecordingSession[] = await response.json();
+        setSessions(data);
+      } catch (err: any) {
+        console.error("Error fetching sessions:", err);
+        setError(err.message || t("sessions.fetchError"));
+        setSessions([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (status === "authenticated") {
       fetchSessions();
     }
-  }, [status, lang, router]);
+  }, [status, lang, router, t]);
 
   const handleSessionClick = (sessionId: string) => {
     router.push(`/${lang}/sessions/${sessionId}`);
@@ -80,23 +60,65 @@ export default function SessionsScreen() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <p className="text-xl text-red-500 text-center">{error}</p>
+      </div>
+    );
+  }
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        ease: "easeOut",
+        duration: 0.4,
+      },
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+    <motion.div
+      className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+        <motion.h1
+          className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center"
+          variants={itemVariants}
+        >
           {t("sessions.title")}
-        </h1>
+        </motion.h1>
         {sessions.length === 0 ? (
-          <p className="text-lg text-gray-700 dark:text-gray-300 text-center mt-12">
+          <motion.p
+            className="text-lg text-gray-700 dark:text-gray-300 text-center mt-12"
+            variants={itemVariants}
+          >
             {t("sessions.noSessions")}
-          </p>
+          </motion.p>
         ) : (
-          <div className="space-y-4">
+          <motion.div className="space-y-4" variants={containerVariants}>
             {sessions.map((item) => (
-              <button
+              <motion.button
                 key={item.id}
                 onClick={() => handleSessionClick(item.id)}
                 className="block w-full text-left bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-200 ease-in-out"
+                variants={itemVariants}
               >
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
                   {item.title}
@@ -107,12 +129,11 @@ export default function SessionsScreen() {
                 <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
                   {new Date(item.createdAt).toLocaleDateString(lang)}
                 </p>
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
-

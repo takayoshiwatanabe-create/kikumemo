@@ -185,7 +185,11 @@ export async function POST(
 
     if (aiOutputsToCreate.length > 0) {
       await prisma.ai_outputs.createMany({
-        data: aiOutputsToCreate,
+        data: aiOutputsToCreate.map(output => ({
+          ...output,
+          confidence_score: 0.95, // Mock confidence score
+          created_at: new Date(),
+        })),
       });
     }
 
@@ -202,4 +206,5 @@ export async function POST(
     return NextResponse.json({ message: "Internal server error", error: error.message }, { status: 500 });
   }
 }
+
 

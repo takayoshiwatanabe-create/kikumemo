@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { SessionStatusResponse } from "@/types";
 import { Session } from "next-auth";
 
 const prisma = new PrismaClient();
@@ -27,6 +26,12 @@ export async function GET(
         status: true,
         transcript: true,
         ai_summary: true,
+        title: true,
+        user_notes: true,
+        duration_seconds: true,
+        language_code: true,
+        created_at: true,
+        updated_at: true,
       },
     });
 
@@ -34,11 +39,17 @@ export async function GET(
       return NextResponse.json({ message: "Session not found" }, { status: 404 });
     }
 
-    const response: SessionStatusResponse = {
+    const response = {
       id: recordingSession.id,
       status: recordingSession.status,
       transcript: recordingSession.transcript || undefined,
-      aiSummary: recordingSession.ai_summary || undefined,
+      ai_summary: recordingSession.ai_summary || undefined,
+      title: recordingSession.title,
+      user_notes: recordingSession.user_notes || undefined,
+      duration_seconds: recordingSession.duration_seconds,
+      language_code: recordingSession.language_code,
+      createdAt: recordingSession.created_at,
+      updatedAt: recordingSession.updated_at,
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -47,4 +58,3 @@ export async function GET(
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
-

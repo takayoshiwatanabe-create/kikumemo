@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 import Sidebar from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { useUIStore } from "@/stores/ui-store";
 
 export default function LocaleLayout({
   children,
@@ -12,7 +13,7 @@ export default function LocaleLayout({
   children: React.ReactNode;
 }) {
   const { lang, isRTL } = useI18n();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { sidebarOpen, toggleSidebar } = useUIStore();
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -20,19 +21,17 @@ export default function LocaleLayout({
   }, [lang, isRTL]);
 
   return (
-    <div className={cn("flex min-h-screen flex-col lg:flex-row", isRTL ? "rtl" : "ltr")}>
+    <div className={cn("flex min-h-screen", isRTL ? "rtl" : "ltr")}>
       {/* Sidebar for large screens, always static here */}
       <Sidebar isOpen={false} onClose={() => {}} isStatic={true} />
 
       {/* Mobile Sidebar (overlay) */}
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => toggleSidebar()} />
 
       <div className="flex flex-1 flex-col">
-        <Header onMenuPress={() => setIsSidebarOpen(true)} />
+        <Header onMenuPress={() => toggleSidebar()} />
         <main className="flex-1">{children}</main>
       </div>
     </div>
   );
 }
-
-

@@ -26,3 +26,4 @@ export default function SessionDetailPage() {
   return <SessionDetailScreen />;
 }
 
+
