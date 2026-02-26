@@ -40,7 +40,7 @@ export default function RealtimeTranscript({
   isRecording,
   isProcessing,
 }: RealtimeTranscriptProps) {
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n(); // Destructure isRTL
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function RealtimeTranscript({
       </h3>
       <div
         ref={scrollRef}
-        className="text-gray-800 dark:text-gray-200 text-base leading-relaxed h-48 overflow-y-auto custom-scrollbar"
+        className={`text-gray-800 dark:text-gray-200 text-base leading-relaxed h-48 overflow-y-auto custom-scrollbar ${isRTL ? "text-right" : "text-left"}`} // Apply RTL class
       >
         {isRecording && transcript.length === 0 && (
           <motion.p
@@ -105,3 +105,4 @@ export default function RealtimeTranscript({
     </div>
   );
 }
+

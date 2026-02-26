@@ -42,3 +42,4 @@ export default function DecisionsList({ decisions }: DecisionsListProps) {
     </motion.ul>
   );
 }
+

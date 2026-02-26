@@ -25,3 +25,5 @@ export async function generateMetadata({ params }: { params: { id: string, local
 export default function SessionDetailPage() {
   return <SessionDetailScreen />;
 }
+
+

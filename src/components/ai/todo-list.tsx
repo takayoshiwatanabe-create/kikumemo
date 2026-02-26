@@ -28,7 +28,7 @@ const listItemVariants = {
 };
 
 export default function TodoList({ todos, lang }: TodoListProps) {
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n(); // Destructure isRTL
 
   const getPriorityClass = (priority: 'high' | 'medium' | 'low') => {
     switch (priority) {
@@ -45,7 +45,7 @@ export default function TodoList({ todos, lang }: TodoListProps) {
 
   return (
     <motion.ul
-      className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-2"
+      className={`list-disc list-inside text-gray-800 dark:text-gray-200 space-y-2 ${isRTL ? "text-right" : "text-left"}`} // Apply RTL class
       variants={TypewriterVariants}
       initial="hidden"
       animate="visible"
@@ -73,3 +73,5 @@ export default function TodoList({ todos, lang }: TodoListProps) {
     </motion.ul>
   );
 }
+
+

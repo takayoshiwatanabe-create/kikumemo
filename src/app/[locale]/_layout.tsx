@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Sidebar from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useUIStore } from "@/stores/ui-store";
+import { usePathname } from "next/navigation"; // Import usePathname
 
 export default function LocaleLayout({
   children,
@@ -14,11 +15,19 @@ export default function LocaleLayout({
 }) {
   const { lang, isRTL } = useI18n();
   const { sidebarOpen, toggleSidebar } = useUIStore();
+  const pathname = usePathname(); // Get current pathname
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
   }, [lang, isRTL]);
+
+  // Close sidebar when route changes
+  useEffect(() => {
+    if (sidebarOpen) {
+      toggleSidebar();
+    }
+  }, [pathname, sidebarOpen, toggleSidebar]);
 
   return (
     <div className={cn("flex min-h-screen", isRTL ? "rtl" : "ltr")}>
@@ -36,3 +45,4 @@ export default function LocaleLayout({
     </div>
   );
 }
+

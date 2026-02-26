@@ -181,9 +181,10 @@ export default function SessionDetailScreen() {
         )}
 
         <motion.div variants={itemVariants}>
-          <SummaryDisplay summary={aiOutput} isLoading={sessionData.status === 'processing'} error={error} isRTL={isRTL} />
+          <SummaryDisplay summary={aiOutput} isLoading={sessionData.status === 'processing'} error={error} />
         </motion.div>
       </div>
     </motion.div>
   );
 }
+

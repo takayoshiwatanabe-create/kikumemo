@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useI18n } from "@/i18n"; // Import useI18n
 
 interface KeyPointsListProps {
   points: string[];
@@ -24,9 +25,11 @@ const listItemVariants = {
 };
 
 export default function KeyPointsList({ points }: KeyPointsListProps) {
+  const { isRTL } = useI18n(); // Use isRTL from i18n context
+
   return (
     <motion.ul
-      className="list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1"
+      className={`list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1 ${isRTL ? "text-right" : "text-left"}`} // Apply RTL class
       variants={TypewriterVariants}
       initial="hidden"
       animate="visible"
@@ -39,3 +42,4 @@ export default function KeyPointsList({ points }: KeyPointsListProps) {
     </motion.ul>
   );
 }
+

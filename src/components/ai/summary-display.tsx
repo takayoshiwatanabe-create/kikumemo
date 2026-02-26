@@ -31,7 +31,7 @@ const ThinkingVariants = {
 };
 
 export default function SummaryDisplay({ summary, isLoading, error }: SummaryDisplayProps) {
-  const { t, lang } = useI18n();
+  const { t, lang, isRTL } = useI18n(); // Destructure isRTL
 
   if (isLoading) {
     return (
@@ -67,7 +67,7 @@ export default function SummaryDisplay({ summary, isLoading, error }: SummaryDis
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 ${isRTL ? "text-right" : "text-left"}`}>
       <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{t("session.aiSummary")}</h2>
       <p className="text-gray-800 dark:text-gray-200 leading-relaxed mb-4">{summary.summary}</p>
 
@@ -101,3 +101,5 @@ export default function SummaryDisplay({ summary, isLoading, error }: SummaryDis
     </div>
   );
 }
+
+

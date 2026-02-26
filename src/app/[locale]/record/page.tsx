@@ -24,3 +24,5 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 export default function RecordPage() {
   return <RecordScreen />;
 }
+
+

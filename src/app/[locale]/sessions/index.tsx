@@ -137,3 +137,4 @@ export default function SessionsScreen() {
     </motion.div>
   );
 }
+

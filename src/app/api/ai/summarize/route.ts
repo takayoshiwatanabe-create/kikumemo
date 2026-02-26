@@ -81,3 +81,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Failed to generate AI summary", error: (error as Error).message }, { status: 500 });
   }
 }
+
+
