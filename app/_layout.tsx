@@ -1,13 +1,10 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { Redirect } from "expo-router";
+import { lang } from "@/i18n"; // Import the detected language
 
 export default function RootLayout() {
-  return (
-    <>
-      <Stack>
-        <Stack.Screen name="index" options={{ title: "キクメモ (KikuMemo)" }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </>
-  );
+  // Redirect to the detected locale's root
+  return <Redirect href={`/${lang}/dashboard`} />;
 }
+
