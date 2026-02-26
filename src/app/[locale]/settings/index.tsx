@@ -37,11 +37,11 @@ export default function SettingsScreen() {
   useEffect(() => {
     if (userPreferences) {
       setLocalPreferences({
-        language: userPreferences.language as Language, // Cast to Language
+        language: userPreferences.language as Language,
         timezone: userPreferences.timezone,
-        audioQuality: userPreferences.audio_quality, // Use audio_quality from DB
-        autoSave: userPreferences.auto_save, // Use auto_save from DB
-        exportFormat: userPreferences.export_format, // Use export_format from DB
+        audioQuality: userPreferences.audio_quality,
+        autoSave: userPreferences.auto_save,
+        exportFormat: userPreferences.export_format,
       });
       // Ensure the i18n language matches the fetched preference
       if (userPreferences.language !== lang) {
@@ -53,10 +53,8 @@ export default function SettingsScreen() {
   const handleLanguageChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value as Language;
     setLocalPreferences((prev) => ({ ...prev, language: newLang }));
-    setLanguage(newLang); // Update i18n context immediately
+    setLanguage(newLang);
     await updateUserPreferences({ language: newLang });
-    // No need to redirect here, the language change in i18n context and `document.documentElement.lang` in _layout.tsx
-    // will handle the UI update. The URL locale is already handled by Next.js routing.
   };
 
   const handleTimezoneChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -68,19 +66,19 @@ export default function SettingsScreen() {
   const handleAudioQualityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newQuality = e.target.value as 'standard' | 'high';
     setLocalPreferences((prev) => ({ ...prev, audioQuality: newQuality }));
-    await updateUserPreferences({ audio_quality: newQuality }); // Use audio_quality for DB update
+    await updateUserPreferences({ audio_quality: newQuality });
   };
 
   const handleToggleAutoSave = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setLocalPreferences((prev) => ({ ...prev, autoSave: value }));
-    await updateUserPreferences({ auto_save: value }); // Use auto_save for DB update
+    await updateUserPreferences({ auto_save: value });
   };
 
   const handleExportFormatChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFormat = e.target.value as 'markdown' | 'docx' | 'pdf';
     setLocalPreferences((prev) => ({ ...prev, exportFormat: newFormat }));
-    await updateUserPreferences({ export_format: newFormat }); // Use export_format for DB update
+    await updateUserPreferences({ export_format: newFormat });
   };
 
   if (isLoading || status === "loading") {
@@ -243,4 +241,3 @@ export default function SettingsScreen() {
     </motion.div>
   );
 }
-

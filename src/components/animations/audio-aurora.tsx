@@ -31,5 +31,3 @@ export default function AudioAurora({ isRecording, volume }: AudioAuroraProps) {
     />
   );
 }
-
-

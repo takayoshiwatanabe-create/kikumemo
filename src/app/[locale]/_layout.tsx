@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import Sidebar from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useUIStore } from "@/stores/ui-store";
-import { usePathname } from "next/navigation"; // Import usePathname
+import { usePathname } from "next/navigation";
 
 export default function LocaleLayout({
   children,
@@ -15,7 +15,7 @@ export default function LocaleLayout({
 }) {
   const { lang, isRTL } = useI18n();
   const { sidebarOpen, toggleSidebar } = useUIStore();
-  const pathname = usePathname(); // Get current pathname
+  const pathname = usePathname();
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -39,10 +39,9 @@ export default function LocaleLayout({
       {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} isStatic={false} />}
 
       <div className="flex flex-1 flex-col">
-        <Header onMenuPress={toggleSidebar} /> {/* Added onMenuPress to Header */}
+        <Header onMenuPress={toggleSidebar} />
         <main className="flex-1">{children}</main>
       </div>
     </div>
   );
 }
-

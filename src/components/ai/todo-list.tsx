@@ -73,5 +73,3 @@ export default function TodoList({ todos, lang }: TodoListProps) {
     </motion.ul>
   );
 }
-
-

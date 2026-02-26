@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useI18n } from "@/i18n";
-import { RecordingSession, AISummaryResponse, AITodoItem } from "@/types"; // Import AITodoItem
+import { RecordingSession, AISummaryResponse, AITodoItem } from "@/types";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { translations } from "@/i18n/translations";
@@ -59,7 +59,7 @@ export default function SessionDetailScreen() {
               try {
                 const content = JSON.parse(output.content);
                 if (output.type === 'key_points') aiSummaryResponse.keyPoints = content;
-                if (output.type === 'todos') aiSummaryResponse.todos = content as AITodoItem[]; // Cast to AITodoItem[]
+                if (output.type === 'todos') aiSummaryResponse.todos = content as AITodoItem[];
                 if (output.type === 'decisions') aiSummaryResponse.decisions = content;
                 if (output.type === 'open_issues') aiSummaryResponse.openIssues = content;
               } catch (parseError) {
@@ -187,4 +187,3 @@ export default function SessionDetailScreen() {
     </motion.div>
   );
 }
-

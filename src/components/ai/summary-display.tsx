@@ -101,5 +101,3 @@ export default function SummaryDisplay({ summary, isLoading, error }: SummaryDis
     </div>
   );
 }
-
-

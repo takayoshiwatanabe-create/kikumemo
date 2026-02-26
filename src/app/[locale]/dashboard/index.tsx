@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Session } from "next-auth"; // Import Session type
+import { Session } from "next-auth";
 
 export default function DashboardScreen() {
   const { t, lang, isRTL } = useI18n();
@@ -89,5 +89,3 @@ export default function DashboardScreen() {
     </motion.div>
   );
 }
-
-
