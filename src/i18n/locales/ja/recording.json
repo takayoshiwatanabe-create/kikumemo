@@ -1,0 +1,18 @@
+{
+  "title": "新しい録音",
+  "instructions": "会議のタイトルを入力し、録音を開始してください。AIがリアルタイムで文字起こしと要約を行います。",
+  "sessionTitle": "会議のタイトル",
+  "sessionTitlePlaceholder": "例：プロジェクトキックオフミーティング",
+  "startButton": "録音開始",
+  "stopButton": "録音停止",
+  "pauseButton": "一時停止",
+  "resumeButton": "再開",
+  "titleRequired": "会議のタイトルは必須です。",
+  "permissionDenied": "マイクへのアクセスが拒否されました。設定を確認してください。",
+  "realtimeTranscript": "リアルタイム文字起こし",
+  "listening": "音声を聴いています",
+  "processingAudio": "音声を処理中",
+  "startRecordingPrompt": "録音を開始して、AIの魔法を体験してください！",
+  "listeningChunk": "..."
+}
+

@@ -64,4 +64,3 @@ export function Header({ onMenuPress }: HeaderProps) {
     </header>
   );
 }
-

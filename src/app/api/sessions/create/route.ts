@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { CreateSessionRequest } from "@/types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Session } from "next-auth";
+import { Session } from "next-auth"; // Import Session type
 
 const prisma = new PrismaClient();
 
@@ -38,4 +38,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
-

@@ -10,9 +10,7 @@ interface TypewriterProps {
   className?: string;
 }
 
-// The TypewriterVariants were defined in CLAUDE.md but not used in this component.
-// The component was using inline variants.
-// Re-integrating the TypewriterVariants from CLAUDE.md for consistency.
+// The TypewriterVariants were defined in CLAUDE.md and should be used here.
 const TypewriterVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -42,5 +40,3 @@ export default function Typewriter({ text, delay = 0.5, stagger = 0.03, classNam
     </motion.span>
   );
 }
-
-

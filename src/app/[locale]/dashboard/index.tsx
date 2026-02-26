@@ -5,6 +5,7 @@ import { useI18n } from "@/i18n";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Session } from "next-auth"; // Import Session type
 
 export default function DashboardScreen() {
   const { t, lang } = useI18n();
@@ -27,7 +28,7 @@ export default function DashboardScreen() {
   }
 
   // Ensure session.user is not null before accessing its properties
-  const userName = session?.user?.name || "User";
+  const userName = (session as Session)?.user?.name || "User"; // Cast session to Session
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
@@ -56,4 +57,3 @@ export default function DashboardScreen() {
     </div>
   );
 }
-

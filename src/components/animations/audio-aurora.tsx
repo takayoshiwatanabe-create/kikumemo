@@ -8,6 +8,7 @@ interface AudioAuroraProps {
   volume: number; // Normalized volume from 0 to 1
 }
 
+// AudioAuroraVariants from CLAUDE.md
 const AudioAuroraVariants = {
   idle: {
     scale: [1, 1.05, 1],
@@ -38,5 +39,3 @@ export default function AudioAurora({ isRecording, volume }: AudioAuroraProps) {
     />
   );
 }
-
-

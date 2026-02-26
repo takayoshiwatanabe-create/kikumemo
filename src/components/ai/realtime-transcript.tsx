@@ -21,6 +21,7 @@ const TypewriterVariants = {
   },
 };
 
+// ThinkingVariants from CLAUDE.md
 const ThinkingVariants = {
   initial: { y: 20, opacity: 0 },
   animate: {
@@ -58,7 +59,7 @@ export default function RealtimeTranscript({
   };
 
   return (
-    <div className="w-full max-w-2xl h-64 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 overflow-y-auto border border-gray-200 dark:border-gray-700">
+    <div className="w-full max-w-2xl h-64 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 overflow-y-auto border border-gray-200 dark:border-gray-700 mt-8">
       <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
         {t("record.realtimeTranscript")}
       </h3>
@@ -71,7 +72,7 @@ export default function RealtimeTranscript({
             className="text-gray-500 dark:text-gray-400 italic"
             initial="initial"
             animate="animate"
-            variants={ThinkingVariants}
+            variants={ThinkingVariants} // Use ThinkingVariants from CLAUDE.md
           >
             {t("record.listening")}...
           </motion.p>
@@ -91,7 +92,7 @@ export default function RealtimeTranscript({
             className="text-blue-600 dark:text-blue-400 italic mt-4"
             initial="initial"
             animate="animate"
-            variants={ThinkingVariants}
+            variants={ThinkingVariants} // Use ThinkingVariants from CLAUDE.md
           >
             {t("record.processingAudio")}...
           </motion.p>
@@ -105,5 +106,3 @@ export default function RealtimeTranscript({
     </div>
   );
 }
-
-

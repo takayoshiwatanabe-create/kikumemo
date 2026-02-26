@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { useSessionStore } from "@/stores/session-store";
 import AudioVisualizer from "@/components/audio/audio-visualizer";
@@ -9,7 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Language } from "@/i18n/translations"; // Import Language type
+import { Language } from "@/i18n/translations";
+import RealtimeTranscript from "@/components/ai/realtime-transcript";
+import { AudioVisualizerMessage } from "@/types";
+import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 
 export default function RecordScreen() {
   const { t, lang } = useI18n();
@@ -18,83 +21,73 @@ export default function RecordScreen() {
 
   const {
     currentSession,
-    isRecording,
-    audioData,
     isLoading,
     error,
     createSession,
-    startRecording,
-    stopRecording,
-    // updateUserNotes, // Not used in this component currently
     processSession,
   } = useSessionStore();
 
   const [sessionTitle, setSessionTitle] = useState("");
-  const [userNotes, setUserNotes] = useState(""); // State for user notes, though not used in UI yet
-  const [isPaused, setIsPaused] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const animationFrameIdRef = useRef<number | null>(null);
+  const [userNotes, setUserNotes] = useState("");
+  const [transcript, setTranscript] = useState<string>("");
+  const [audioVisualizerData, setAudioVisualizerData] = useState<AudioVisualizerMessage | null>(null);
+
+  const {
+    isRecording,
+    isPaused,
+    start: startRecordingHook,
+    stop: stopRecordingHook,
+    pause: pauseRecordingHook,
+    resume: resumeRecordingHook,
+  } = useAudioRecorder({
+    onDataAvailable: (data) => {
+      // In a real scenario, send this data to a WebSocket for real-time ASR
+      // For demonstration, we'll just append a placeholder and simulate visualizer data
+      if (data.size > 0) {
+        // Simulate real-time transcript chunk
+        setTranscript(prev => prev + " " + t("record.listeningChunk"));
+
+        // Simulate audio visualizer data
+        const volume = Math.random(); // Random volume between 0 and 1
+        const frequencies = Array.from({ length: 50 }, () => Math.random()); // 50 random frequencies
+        setAudioVisualizerData({
+          type: 'audio_data',
+          sessionId: currentSession?.id || 'mock-session-id',
+          frequencies: frequencies,
+          volume: volume,
+        });
+      }
+    },
+    onStop: async (audioBlob) => {
+      if (currentSession) {
+        const formData = new FormData();
+        formData.append("audioBlob", audioBlob);
+        formData.append("userNotes", userNotes);
+
+        const uploadResponse = await fetch(`/api/sessions/${currentSession.id}/upload-audio`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload audio");
+        }
+
+        await processSession(currentSession.id, transcript, userNotes, lang as Language); // Pass session ID and other data
+        router.push(`/${lang}/sessions/${currentSession.id}`);
+      }
+    },
+    onError: (err) => {
+      console.error("Recording error:", err);
+      useSessionStore.setState({ error: err.message }); // Store error message
+    }
+  });
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push(`/${lang}/auth/login`);
     }
   }, [status, lang, router]);
-
-  const initAudioProcessing = async (stream: MediaStream) => {
-    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const source = audioContextRef.current.createMediaStreamSource(stream);
-    analyserRef.current = audioContextRef.current.createAnalyser();
-    analyserRef.current.fftSize = 256;
-    source.connect(analyserRef.current);
-
-    const bufferLength = analyserRef.current.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    const updateVisualizer = () => {
-      if (!analyserRef.current || !isRecording || isPaused) {
-        animationFrameIdRef.current = null;
-        return;
-      }
-
-      analyserRef.current.getByteFrequencyData(dataArray);
-
-      let sumSquares = 0;
-      for (const amplitude of dataArray) {
-        sumSquares += amplitude * amplitude;
-      }
-      const rms = Math.sqrt(sumSquares / dataArray.length);
-      const normalizedVolume = rms / 128;
-
-      const frequencies = Array.from(dataArray).map(val => val / 255);
-
-      useSessionStore.setState({
-        audioData: {
-          frequencies: frequencies,
-          volume: normalizedVolume,
-        },
-      });
-
-      animationFrameIdRef.current = requestAnimationFrame(updateVisualizer);
-    };
-
-    animationFrameIdRef.current = requestAnimationFrame(updateVisualizer);
-  };
-
-  const stopAudioProcessing = () => {
-    if (animationFrameIdRef.current) {
-      cancelAnimationFrame(animationFrameIdRef.current);
-      animationFrameIdRef.current = null;
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-    useSessionStore.setState({ audioData: null });
-  };
 
   const handleStartRecording = async () => {
     if (!sessionTitle.trim()) {
@@ -108,73 +101,29 @@ export default function RecordScreen() {
     }
 
     try {
-      await createSession(sessionTitle, lang as Language); // Cast lang to Language
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: "audio/webm" });
-
-      audioChunksRef.current = [];
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data);
-      };
-
-      mediaRecorderRef.current.onstop = async () => {
-        stopAudioProcessing();
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-
-        if (currentSession) {
-          const formData = new FormData();
-          formData.append("audioBlob", audioBlob);
-          formData.append("userNotes", userNotes);
-
-          const uploadResponse = await fetch(`/api/sessions/${currentSession.id}/upload-audio`, {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!uploadResponse.ok) {
-            throw new Error("Failed to upload audio");
-          }
-
-          await processSession();
-          router.push(`/${lang}/sessions/${currentSession.id}`);
-        }
-      };
-
-      mediaRecorderRef.current.start();
-      startRecording();
-      setIsPaused(false);
-      initAudioProcessing(stream);
-    } catch (err) {
+      await createSession(sessionTitle, lang as Language);
+      setTranscript("");
+      setAudioVisualizerData(null);
+      startRecordingHook();
+    } catch (err: any) { // Catch error as any to access message property
       console.error("Error starting recording:", err);
       alert(t("record.permissionDenied"));
-      useSessionStore.setState({ error: "Failed to start recording" });
+      useSessionStore.setState({ error: err.message || "Failed to start recording" });
     }
   };
 
   const handleStopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      mediaRecorderRef.current.stop();
-      stopRecording();
-    }
+    stopRecordingHook();
+    setAudioVisualizerData(null);
   };
 
   const handlePauseRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
-      mediaRecorderRef.current.pause();
-      setIsPaused(true);
-      stopAudioProcessing();
-    }
+    pauseRecordingHook();
+    setAudioVisualizerData(null);
   };
 
   const handleResumeRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "paused") {
-      mediaRecorderRef.current.resume();
-      setIsPaused(false);
-      if (mediaRecorderRef.current.stream) {
-        initAudioProcessing(mediaRecorderRef.current.stream);
-      }
-    }
+    resumeRecordingHook();
   };
 
   if (status === "loading") {
@@ -210,7 +159,13 @@ export default function RecordScreen() {
         />
       </div>
 
-      <AudioVisualizer audioData={audioData} isRecording={isRecording && !isPaused} />
+      <AudioVisualizer audioData={audioVisualizerData} isRecording={isRecording && !isPaused} />
+
+      <RealtimeTranscript
+        transcript={transcript}
+        isRecording={isRecording && !isPaused}
+        isProcessing={isLoading && !isRecording}
+      />
 
       <div className="mt-8">
         <RecordingControls
@@ -237,4 +192,3 @@ export default function RecordScreen() {
     </div>
   );
 }
-

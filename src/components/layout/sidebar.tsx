@@ -73,5 +73,3 @@ export default function Sidebar({ isOpen, onClose, isStatic = false }: SidebarPr
     </>
   );
 }
-
-
