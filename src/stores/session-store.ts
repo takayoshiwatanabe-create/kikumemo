@@ -82,9 +82,12 @@ export const useSessionStore = create<SessionStore>((set) => ({
         throw new Error("No current session to process.");
       }
       const sessionId = useSessionStore.getState().currentSession!.id;
-      const transcript = useSessionStore.getState().currentSession!.transcript || "";
-      const userNotes = useSessionStore.getState().currentSession!.user_notes || "";
-      const language = useSessionStore.getState().currentSession!.language_code || "en";
+      // The transcript, userNotes, and language should ideally be fetched from the session
+      // or passed as parameters if they are mutable after recording.
+      // For now, using the currentSession state, which might be stale if not updated.
+      // const transcript = useSessionStore.getState().currentSession!.transcript || ""; // Not used directly in API call
+      // const userNotes = useSessionStore.getState().currentSession!.user_notes || ""; // Not used directly in API call
+      // const language = useSessionStore.getState().currentSession!.language_code || "en"; // Not used directly in API call
 
       // Simulate API call for processing (e.g., AI summarization)
       // This would typically be a separate API call, or triggered by the upload-audio endpoint.
@@ -114,3 +117,4 @@ export const useSessionStore = create<SessionStore>((set) => ({
     }
   },
 }));
+

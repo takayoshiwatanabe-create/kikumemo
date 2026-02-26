@@ -5,6 +5,7 @@ import { useI18n } from "@/i18n";
 import { useRouter } from "next/navigation";
 import { RecordingSession } from "@/types";
 import { useSession } from "next-auth/react"; // Import useSession
+import { translations } from "@/i18n/translations";
 
 const mockSessions: RecordingSession[] = [
   {
@@ -103,7 +104,7 @@ export default function SessionsScreen() {
                   {item.title}
                 </h2>
                 <p className="text-md text-gray-600 dark:text-gray-400">
-                  {t(`session.status.${item.status}`)}
+                  {t(`session.status.${item.status}` as keyof typeof translations.en.session.status)}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
                   {new Date(item.createdAt).toLocaleDateString(lang)}
@@ -116,3 +117,4 @@ export default function SessionsScreen() {
     </div>
   );
 }
+

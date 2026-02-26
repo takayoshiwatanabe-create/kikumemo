@@ -64,8 +64,10 @@ export interface AudioVisualizerMessage {
 
 // Audio Data (for frontend state)
 export interface AudioData {
-  buffer?: Float32Array;
-  volume?: number;
-  frequencies?: number[];
+  // buffer?: Float32Array; // Removed as it's not used in current visualizer and might be heavy for state
+  volume: number; // Made required as it's always expected
+  frequencies: number[]; // Made required as it's always expected
 }
+
+
 

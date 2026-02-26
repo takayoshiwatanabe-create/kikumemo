@@ -101,7 +101,7 @@ export default function SessionDetailScreen() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-4xl mx-auto pb-12">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{sessionData.title}</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t(`session.status.${sessionData.status}`)}</p>
+        <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t(`session.status.${sessionData.status}` as keyof typeof translations.en.session.status)}</p>
 
         {sessionData.transcript && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
@@ -173,3 +173,4 @@ export default function SessionDetailScreen() {
     </div>
   );
 }
+

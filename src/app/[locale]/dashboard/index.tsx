@@ -26,6 +26,7 @@ export default function DashboardScreen() {
     return null;
   }
 
+  // Ensure session.user is not null before accessing its properties
   const userName = session?.user?.name || "User";
 
   return (
@@ -55,3 +56,4 @@ export default function DashboardScreen() {
     </div>
   );
 }
+

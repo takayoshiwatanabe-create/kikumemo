@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Language } from "@/i18n/translations"; // Import Language type
 
 export default function RecordScreen() {
   const { t, lang } = useI18n();
@@ -24,12 +25,12 @@ export default function RecordScreen() {
     createSession,
     startRecording,
     stopRecording,
-    updateUserNotes,
+    // updateUserNotes, // Not used in this component currently
     processSession,
   } = useSessionStore();
 
   const [sessionTitle, setSessionTitle] = useState("");
-  const [userNotes, setUserNotes] = useState("");
+  const [userNotes, setUserNotes] = useState(""); // State for user notes, though not used in UI yet
   const [isPaused, setIsPaused] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -107,7 +108,7 @@ export default function RecordScreen() {
     }
 
     try {
-      await createSession(sessionTitle, lang);
+      await createSession(sessionTitle, lang as Language); // Cast lang to Language
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: "audio/webm" });
@@ -236,3 +237,4 @@ export default function RecordScreen() {
     </div>
   );
 }
+

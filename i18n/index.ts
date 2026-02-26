@@ -82,7 +82,7 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
 
   const t = (key: string, vars?: Record<string, string | number>): string => {
     const dict = translations[currentLang] ?? translations[DEFAULT_LANGUAGE];
-    let text = dict[key] ?? translations[DEFAULT_LANGUAGE][key] ?? key;
+    let text = (dict as Record<string, string>)[key] ?? (translations[DEFAULT_LANGUAGE] as Record<string, string>)[key] ?? key;
     if (vars) {
       for (const [k, v] of Object.entries(vars)) {
         text = text.replace(new RegExp(`{{\\s*${k}\\s*}}`, "g"), String(v));

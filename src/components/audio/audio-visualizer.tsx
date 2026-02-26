@@ -15,11 +15,11 @@ const AudioAuroraVariants = {
     opacity: [0.3, 0.6, 0.3],
     transition: { duration: 2, repeat: Infinity, ease: "easeInOut" },
   },
-  active: {
-    scale: [1, 1.2, 0.8, 1.1, 1],
-    opacity: [0.4, 0.8, 0.6, 0.9, 0.4],
+  active: (volume: number) => ({ // Pass volume as a custom prop to the active variant
+    scale: [1, 1.0 + volume * 0.3, 0.9 + volume * 0.1, 1.1 + volume * 0.2, 1],
+    opacity: [0.4, 0.8 + volume * 0.2, 0.6 + volume * 0.1, 0.9 + volume * 0.1, 0.4],
     transition: { duration: 0.8, repeat: Infinity, ease: "easeInOut" },
-  },
+  }),
 };
 
 export default function AudioVisualizer({ audioData, isRecording }: AudioVisualizerProps) {
@@ -86,6 +86,7 @@ export default function AudioVisualizer({ audioData, isRecording }: AudioVisuali
         className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 blur-xl opacity-50"
         variants={AudioAuroraVariants}
         animate={isRecording ? "active" : "idle"}
+        custom={volume} // Pass volume as custom prop for active variant
         style={{
           width: `${100 + volume * 50}%`,
           height: `${100 + volume * 50}%`,
@@ -102,3 +103,5 @@ export default function AudioVisualizer({ audioData, isRecording }: AudioVisuali
     </div>
   );
 }
+
+

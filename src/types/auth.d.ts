@@ -51,3 +51,5 @@ declare module "next-auth/jwt" {
 // This `auth.d.ts` file is specifically for extending NextAuth's internal types.
 // No need to duplicate `LoginRequest` etc. here.
 
+
+
