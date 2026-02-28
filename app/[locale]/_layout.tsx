@@ -12,13 +12,13 @@ import Sidebar from "@/components/layout/sidebar"; // Import Sidebar for large s
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
 // Define supported languages for the layout
 const SUPPORTED_LANGUAGES: Language[] = ["ja", "en", "zh", "ko", "es", "fr", "de", "pt", "ar", "hi"];
 
-export default function LocaleLayout({ children, params }: LocaleLayoutProps) {
+export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   // The locale is available in `params.locale` from the Next.js App Router.
   // We pass this to the I18nProvider to initialize the language.
   // On the server, `getDeviceLanguage` might not work as expected, so `params.locale` is crucial.
